@@ -2,6 +2,11 @@
 
 All notable changes to DevSense will be documented here.
 
+## [1.0.2] - 2026-05-29
+
+### Optimized
+- Minor SEO and registry visibility optimizations.
+
 ## [1.0.1] - 2026-05-28
 
 ### Added
