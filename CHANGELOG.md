@@ -2,6 +2,12 @@
 
 All notable changes to DevSense will be documented here.
 
+## [1.0.8] - 2026-05-29
+
+### Added
+- ✨ UI Feature: Added a live "Last Updated" timestamp to the dashboard header so you know exactly when hardware metrics were last fetched.
+
+
 ## [1.0.7] - 2026-05-29
 
 ### Optimized

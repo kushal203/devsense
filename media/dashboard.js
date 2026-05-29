@@ -116,6 +116,7 @@ function updateMetrics(metrics) {
 
   const { cpu, ram, gpu, disk, network, battery, timestamp } = metrics;
   const time = new Date(timestamp).toLocaleTimeString();
+  setText('lastUpdated', 'Updated: ' + time);
 
   // Update histories
   state.cpuHistory.push(cpu.usage);
