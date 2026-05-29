@@ -2,7 +2,7 @@
   "name": "devsense",
   "displayName": "DevSense — Hardware Intelligence",
   "description": "Real-time hardware monitoring inside VS Code. Tracks CPU, RAM, GPU, temperature, and correlates hardware spikes with your code activity. Lite Mode, Process Manager, Smart Alerts and more.",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "publisher": "devsense-team",
   "icon": "images/icon.png",
   "engines": {
