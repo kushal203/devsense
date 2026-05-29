@@ -1,0 +1,7 @@
+{
+  "spec": "dist-test/test/**/*.test.js",
+  "require": ["dist-test/test/setup.js"],
+  "timeout": 30000,
+  "reporter": "spec",
+  "exit": true
+}

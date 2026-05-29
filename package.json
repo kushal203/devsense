@@ -1,0 +1,163 @@
+{
+  "name": "devsense",
+  "displayName": "DevSense — Hardware Intelligence",
+  "description": "Real-time hardware monitoring inside VS Code. Tracks CPU, RAM, GPU, temperature, and correlates hardware spikes with your code activity. Lite Mode, Process Manager, Smart Alerts and more.",
+  "version": "1.0.1",
+  "publisher": "devsense-team",
+  "icon": "images/icon.png",
+  "engines": {
+    "vscode": "^1.85.0"
+  },
+  "categories": [
+    "Other",
+    "Visualization"
+  ],
+  "keywords": [
+    "hardware monitor",
+    "cpu",
+    "ram",
+    "performance",
+    "system monitor",
+    "developer tools",
+    "productivity"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/devsense-team/devsense"
+  },
+  "license": "MIT",
+  "activationEvents": [
+    "onStartupFinished"
+  ],
+  "main": "./dist/extension.js",
+  "contributes": {
+    "commands": [
+      {
+        "command": "devsense.openDashboard",
+        "title": "DevSense: Open Hardware Dashboard",
+        "icon": "$(pulse)"
+      },
+      {
+        "command": "devsense.toggleLiteMode",
+        "title": "DevSense: Toggle Lite Mode",
+        "icon": "$(zap)"
+      },
+      {
+        "command": "devsense.openProcessManager",
+        "title": "DevSense: Open Process Manager",
+        "icon": "$(list-unordered)"
+      },
+      {
+        "command": "devsense.refreshHardware",
+        "title": "DevSense: Refresh Hardware Data",
+        "icon": "$(refresh)"
+      }
+    ],
+    "views": {
+      "devsense-container": [
+        {
+          "type": "webview",
+          "id": "devsense.dashboard",
+          "name": "Hardware Dashboard",
+          "icon": "$(pulse)"
+        }
+      ]
+    },
+    "viewsContainers": {
+      "activitybar": [
+        {
+          "id": "devsense-container",
+          "title": "DevSense",
+          "icon": "$(pulse)"
+        }
+      ]
+    },
+    "configuration": {
+      "title": "DevSense",
+      "properties": {
+        "devsense.updateInterval": {
+          "type": "number",
+          "default": 2000,
+          "description": "Hardware polling interval in milliseconds (min: 500)"
+        },
+        "devsense.cpuWarningThreshold": {
+          "type": "number",
+          "default": 80,
+          "description": "CPU usage % threshold for warnings"
+        },
+        "devsense.ramWarningThreshold": {
+          "type": "number",
+          "default": 85,
+          "description": "RAM usage % threshold for warnings"
+        },
+        "devsense.tempWarningThreshold": {
+          "type": "number",
+          "default": 80,
+          "description": "CPU temperature °C threshold for warnings"
+        },
+        "devsense.liteModeAutoTrigger": {
+          "type": "boolean",
+          "default": true,
+          "description": "Automatically enable Lite Mode when system is under stress"
+        },
+        "devsense.showStatusBar": {
+          "type": "boolean",
+          "default": true,
+          "description": "Show hardware vitals in the status bar"
+        },
+        "devsense.enableNotifications": {
+          "type": "boolean",
+          "default": true,
+          "description": "Show smart notifications for hardware anomalies"
+        }
+      }
+    },
+    "menus": {
+      "view/title": [
+        {
+          "command": "devsense.refreshHardware",
+          "when": "view == devsense.dashboard",
+          "group": "navigation"
+        },
+        {
+          "command": "devsense.toggleLiteMode",
+          "when": "view == devsense.dashboard",
+          "group": "navigation"
+        },
+        {
+          "command": "devsense.openProcessManager",
+          "when": "view == devsense.dashboard",
+          "group": "navigation"
+        }
+      ]
+    }
+  },
+  "scripts": {
+    "vscode:prepublish": "node esbuild.js --production",
+    "compile": "node esbuild.js",
+    "watch": "node esbuild.js --watch",
+    "test": "npx tsc --outDir dist-test --rootDir src --module commonjs --target ES2020 --esModuleInterop true --skipLibCheck true --resolveJsonModule true --strict false && mocha",
+    "lint": "eslint src",
+    "package": "vsce package",
+    "publish": "vsce publish",
+    "publish:ovsx": "ovsx publish devsense-1.0.0.vsix"
+  },
+  "devDependencies": {
+    "@types/glob": "^8.1.0",
+    "@types/mocha": "^10.0.10",
+    "@types/node": "^20.0.0",
+    "@types/sinon": "^21.0.1",
+    "@types/vscode": "^1.85.0",
+    "@vscode/test-electron": "^2.5.2",
+    "@vscode/vsce": "^2.24.0",
+    "esbuild": "^0.20.0",
+    "glob": "^13.0.6",
+    "mocha": "^11.7.6",
+    "sinon": "^22.0.0",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.3.0"
+  },
+  "dependencies": {
+    "systeminformation": "^5.21.25"
+  }
+}

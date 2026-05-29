@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'nonce-{{NONCE}}' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; script-src 'nonce-{{NONCE}}' https://cdn.jsdelivr.net; img-src data: https:;" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>DevSense Dashboard</title>
+  <link rel="stylesheet" href="{{CSS_URI}}" nonce="{{NONCE}}" />
+</head>
+<body>
+  <div id="app">
+    <!-- Header -->
+    <div class="header">
+      <div class="header-left">
+        <div class="logo">
+          <span class="logo-icon">⚡</span>
+          <span class="logo-text">DevSense</span>
+        </div>
+        <div class="status-dot" id="statusDot" title="Monitoring active"></div>
+      </div>
+      <div class="header-right">
+        <button class="btn-icon" id="liteModeBtn" title="Toggle Lite Mode">
+          <span>🧊</span>
+        </button>
+        <button class="btn-icon" id="processBtn" title="Process Manager">
+          <span>📋</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- Alert Banner -->
+    <div class="alert-banner" id="alertBanner" style="display:none">
+      <span class="alert-icon" id="alertIcon">⚠️</span>
+      <span class="alert-text" id="alertText"></span>
+    </div>
+
+    <!-- Lite Mode Banner -->
+    <div class="lite-banner" id="liteBanner" style="display:none">
+      🧊 <strong>Lite Mode Active</strong> — System under stress
+    </div>
+
+    <!-- Tab Navigation -->
+    <div class="tabs">
+      <button class="tab active" data-tab="overview" id="tab-overview">Overview</button>
+      <button class="tab" data-tab="processes" id="tab-processes">Processes</button>
+      <button class="tab" data-tab="history" id="tab-history">Git Spikes</button>
+    </div>
+
+    <!-- OVERVIEW TAB -->
+    <div class="tab-content active" id="content-overview">
+      <!-- Metric Cards Grid -->
+      <div class="cards-grid">
+        <!-- CPU Card -->
+        <div class="metric-card" id="cpuCard">
+          <div class="card-header">
+            <span class="card-icon">🖥️</span>
+            <span class="card-label">CPU</span>
+            <span class="card-value" id="cpuValue">–%</span>
+          </div>
+          <div class="progress-bar">
+            <div class="progress-fill cpu-fill" id="cpuBar"></div>
+          </div>
+          <div class="card-meta" id="cpuMeta">Loading...</div>
+        </div>
+
+        <!-- RAM Card -->
+        <div class="metric-card" id="ramCard">
+          <div class="card-header">
+            <span class="card-icon">🧠</span>
+            <span class="card-label">RAM</span>
+            <span class="card-value" id="ramValue">–%</span>
+          </div>
+          <div class="progress-bar">
+            <div class="progress-fill ram-fill" id="ramBar"></div>
+          </div>
+          <div class="card-meta" id="ramMeta">Loading...</div>
+        </div>
+
+        <!-- Temperature Card -->
+        <div class="metric-card" id="tempCard">
+          <div class="card-header">
+            <span class="card-icon">🌡️</span>
+            <span class="card-label">Temp</span>
+            <span class="card-value" id="tempValue">–°C</span>
+          </div>
+          <div class="progress-bar">
+            <div class="progress-fill temp-fill" id="tempBar"></div>
+          </div>
+          <div class="card-meta" id="tempMeta">CPU Temperature</div>
+        </div>
+
+        <!-- GPU Card -->
+        <div class="metric-card" id="gpuCard">
+          <div class="card-header">
+            <span class="card-icon">🎮</span>
+            <span class="card-label">GPU</span>
+            <span class="card-value" id="gpuValue">–%</span>
+          </div>
+          <div class="progress-bar">
+            <div class="progress-fill gpu-fill" id="gpuBar"></div>
+          </div>
+          <div class="card-meta" id="gpuMeta">Loading...</div>
+        </div>
+      </div>
+
+      <!-- Network & Disk Row -->
+      <div class="row-cards">
+        <div class="metric-card-sm">
+          <div class="sm-header">
+            <span>🌐 Network</span>
+          </div>
+          <div class="sm-stats">
+            <div class="sm-stat">
+              <span class="sm-label">↓ DL</span>
+              <span class="sm-value" id="netDown">0 KB/s</span>
+            </div>
+            <div class="sm-stat">
+              <span class="sm-label">↑ UL</span>
+              <span class="sm-value" id="netUp">0 KB/s</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="metric-card-sm">
+          <div class="sm-header">
+            <span>💾 Disk</span>
+            <span class="sm-usage" id="diskUsage">–%</span>
+          </div>
+          <div class="sm-stats">
+            <div class="sm-stat">
+              <span class="sm-label">Read</span>
+              <span class="sm-value" id="diskRead">0 ops/s</span>
+            </div>
+            <div class="sm-stat">
+              <span class="sm-label">Write</span>
+              <span class="sm-value" id="diskWrite">0 ops/s</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="metric-card-sm" id="batteryCardSm" style="display:none">
+          <div class="sm-header">
+            <span>🔋 Battery</span>
+          </div>
+          <div class="sm-stats">
+            <div class="sm-stat">
+              <span class="sm-label">Level</span>
+              <span class="sm-value" id="battPct">–%</span>
+            </div>
+            <div class="sm-stat">
+              <span class="sm-label">Status</span>
+              <span class="sm-value" id="battStatus">–</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- CPU History Chart -->
+      <div class="chart-container">
+        <div class="chart-header">
+          <span class="chart-title">⚡ CPU History</span>
+          <span class="chart-subtitle" id="cpuChartLabel">Last 60s</span>
+        </div>
+        <canvas id="cpuChart" height="80"></canvas>
+      </div>
+
+      <!-- RAM History Chart -->
+      <div class="chart-container">
+        <div class="chart-header">
+          <span class="chart-title">🧠 RAM History</span>
+          <span class="chart-subtitle" id="ramChartLabel">Last 60s</span>
+        </div>
+        <canvas id="ramChart" height="80"></canvas>
+      </div>
+
+      <!-- CPU Cores -->
+      <div class="cores-container" id="coresContainer">
+        <div class="chart-title">🔲 CPU Cores</div>
+        <div class="cores-grid" id="coresGrid"></div>
+      </div>
+    </div>
+
+    <!-- PROCESSES TAB -->
+    <div class="tab-content" id="content-processes">
+      <div class="section-header">
+        <span>Top CPU Processes</span>
+        <button class="btn-refresh" id="refreshProcs">↻ Refresh</button>
+      </div>
+      <div id="processList" class="process-list">
+        <div class="loading">Loading processes...</div>
+      </div>
+    </div>
+
+    <!-- GIT SPIKES TAB -->
+    <div class="tab-content" id="content-history">
+      <div class="section-header">
+        <span>Hardware Spikes × Git Commits</span>
+        <button class="btn-refresh" id="refreshSpikes">↻ Refresh</button>
+      </div>
+      <div id="spikeList" class="spike-list">
+        <div class="empty-state">
+          <div class="empty-icon">📊</div>
+          <div class="empty-text">No spikes recorded yet.</div>
+          <div class="empty-sub">Spikes will appear here when hardware anomalies are detected, linked to your current git commit.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script nonce="{{NONCE}}" src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+  <script nonce="{{NONCE}}" src="{{JS_URI}}"></script>
+</body>
+</html>
