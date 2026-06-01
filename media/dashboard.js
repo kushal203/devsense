@@ -252,9 +252,12 @@ function checkAlerts(metrics) {
 function updateProcesses(processes) {
   const list = document.getElementById('processList');
   if (!processes || processes.length === 0) {
+    setText('procCount', '(0)');
     list.innerHTML = '<div class="loading">No processes found.</div>';
     return;
   }
+
+  setText('procCount', `(${processes.length})`);
 
   list.innerHTML = processes.map(p => `
     <div class="process-item">

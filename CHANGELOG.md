@@ -2,6 +2,12 @@
 
 All notable changes to DevSense will be documented here.
 
+## [1.0.10] - 2026-06-01
+
+### Added
+- ✨ UI Feature: Added a process count indicator to the "Top CPU Processes" tab header so you know how many active tasks are being monitored.
+
+
 ## [1.0.9] - 2026-06-01
 
 ### Added
