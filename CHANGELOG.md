@@ -2,6 +2,12 @@
 
 All notable changes to DevSense will be documented here.
 
+## [1.0.9] - 2026-06-01
+
+### Added
+- ✨ UI Feature: Added a live "System Uptime" display in the dashboard header so you know exactly how long your machine has been running.
+
+
 ## [1.0.8] - 2026-05-29
 
 ### Added

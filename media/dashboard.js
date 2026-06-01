@@ -118,6 +118,11 @@ function updateMetrics(metrics) {
   const time = new Date(timestamp).toLocaleTimeString();
   setText('lastUpdated', 'Updated: ' + time);
 
+  // Format and set uptime
+  const hours = Math.floor(metrics.uptime / 3600);
+  const minutes = Math.floor((metrics.uptime % 3600) / 60);
+  setText('sysUptime', `Uptime: ${hours}h ${minutes}m`);
+
   // Update histories
   state.cpuHistory.push(cpu.usage);
   state.cpuHistory.shift();
