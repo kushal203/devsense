@@ -2,6 +2,12 @@
 
 All notable changes to DevSense will be documented here.
 
+## [1.0.13] - 2026-06-06
+
+### Added
+- ✨ UI Feature: Added a convenient "Disable" button directly to the Lite Mode alert banner so you can easily turn it off without opening the settings menu.
+
+
 ## [1.0.12] - 2026-06-06
 
 ### Added

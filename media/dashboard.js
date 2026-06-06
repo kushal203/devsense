@@ -98,6 +98,10 @@ document.getElementById('liteModeBtn').addEventListener('click', () => {
   vscode.postMessage({ type: 'toggleLiteMode' });
 });
 
+document.getElementById('disableLiteBannerBtn').addEventListener('click', () => {
+  vscode.postMessage({ type: 'toggleLiteMode' });
+});
+
 document.getElementById('processBtn').addEventListener('click', () => {
   document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
   document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
@@ -331,7 +335,7 @@ function updateGitSpikes(spikes) {
 function updateLiteMode(active) {
   const banner = document.getElementById('liteBanner');
   const btn = document.getElementById('liteModeBtn');
-  banner.style.display = active ? 'block' : 'none';
+  banner.style.display = active ? 'flex' : 'none';
   btn.title = active ? 'Disable Lite Mode' : 'Enable Lite Mode';
   btn.querySelector('span').textContent = active ? '🔥' : '🧊';
 }
