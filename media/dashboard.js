@@ -265,7 +265,13 @@ function updateProcesses(processes) {
   const list = document.getElementById('processList');
   if (!processes || processes.length === 0) {
     setText('procCount', '(0)');
-    list.innerHTML = '<div class="loading">No processes found.</div>';
+    list.innerHTML = `
+      <div class="empty-state" style="padding-top: 15px;">
+        <div class="empty-icon">🔍</div>
+        <div class="empty-text">No high-CPU processes</div>
+        <div class="empty-sub">Your system is running smoothly.</div>
+      </div>
+    `;
     return;
   }
 

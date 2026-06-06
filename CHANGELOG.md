@@ -2,6 +2,12 @@
 
 All notable changes to DevSense will be documented here.
 
+## [1.0.14] - 2026-06-06
+
+### Added
+- ✨ UI Feature: Improved the "Top CPU Processes" tab with a visually pleasing empty state so it looks great even when there are no background tasks bogging down your system.
+
+
 ## [1.0.13] - 2026-06-06
 
 ### Added
