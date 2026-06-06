@@ -90,6 +90,10 @@ document.querySelectorAll('.tab').forEach(tab => {
 });
 
 // ── Button Handlers ────────────────────────────────────────────
+document.getElementById('settingsBtn').addEventListener('click', () => {
+  vscode.postMessage({ type: 'openSettings' });
+});
+
 document.getElementById('liteModeBtn').addEventListener('click', () => {
   vscode.postMessage({ type: 'toggleLiteMode' });
 });

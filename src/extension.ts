@@ -106,6 +106,8 @@ export function activate(context: vscode.ExtensionContext) {
       DashboardPanel.postMessage({ type: 'gitSpikes', data: spikes });
     } else if (msg.type === 'toggleLiteMode') {
       liteModeManager.toggle();
+    } else if (msg.type === 'openSettings') {
+      vscode.commands.executeCommand('workbench.action.openSettings', 'devsense');
     }
   });
 

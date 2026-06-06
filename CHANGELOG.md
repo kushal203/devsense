@@ -2,6 +2,12 @@
 
 All notable changes to DevSense will be documented here.
 
+## [1.0.11] - 2026-06-06
+
+### Added
+- ✨ UI Feature: Added a convenient "Settings" gear icon to the dashboard header, allowing you to instantly jump into DevSense's configuration settings.
+
+
 ## [1.0.10] - 2026-06-01
 
 ### Added
