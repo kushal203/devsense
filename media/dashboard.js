@@ -114,6 +114,10 @@ document.getElementById('refreshSpikes').addEventListener('click', () => {
   vscode.postMessage({ type: 'getGitSpikes' });
 });
 
+document.getElementById('clearSpikes').addEventListener('click', () => {
+  vscode.postMessage({ type: 'clearSpikes' });
+});
+
 // ── Metrics Update ─────────────────────────────────────────────
 function updateMetrics(metrics) {
   state.lastMetrics = metrics;

@@ -47,6 +47,10 @@ export class GitCorrelator {
     return this.recentSpikes;
   }
 
+  clearSpikes(): void {
+    this.recentSpikes = [];
+  }
+
   private async getCurrentCommit(): Promise<{
     hash: string;
     message: string;

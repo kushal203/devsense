@@ -104,6 +104,9 @@ export function activate(context: vscode.ExtensionContext) {
     } else if (msg.type === 'getGitSpikes') {
       const spikes = gitCorrelator.getRecentSpikes();
       DashboardPanel.postMessage({ type: 'gitSpikes', data: spikes });
+    } else if (msg.type === 'clearSpikes') {
+      gitCorrelator.clearSpikes();
+      DashboardPanel.postMessage({ type: 'gitSpikes', data: [] });
     } else if (msg.type === 'toggleLiteMode') {
       liteModeManager.toggle();
     } else if (msg.type === 'openSettings') {

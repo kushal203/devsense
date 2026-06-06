@@ -200,7 +200,10 @@
     <div class="tab-content" id="content-history">
       <div class="section-header">
         <span>Hardware Spikes × Git Commits</span>
-        <button class="btn-refresh" id="refreshSpikes">↻ Refresh</button>
+        <div style="display:flex;gap:6px;">
+          <button class="btn-refresh" id="refreshSpikes">↻ Refresh</button>
+          <button class="btn-refresh" id="clearSpikes">× Clear</button>
+        </div>
       </div>
       <div id="spikeList" class="spike-list">
         <div class="empty-state">

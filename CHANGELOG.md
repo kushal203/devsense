@@ -2,6 +2,12 @@
 
 All notable changes to DevSense will be documented here.
 
+## [1.0.12] - 2026-06-06
+
+### Added
+- ✨ Feature: Added a "Clear" button to the Git Spikes tab so you can manually dismiss and reset your recorded hardware anomalies.
+
+
 ## [1.0.11] - 2026-06-06
 
 ### Added
