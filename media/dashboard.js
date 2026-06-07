@@ -313,7 +313,7 @@ function updateGitSpikes(spikes) {
     return;
   }
 
-  list.innerHTML = spikes.map(spike => {
+  list.innerHTML = spikes.map((spike, idx) => {
     const date = new Date(spike.timestamp).toLocaleString();
     const badges = spike.anomalies.map(a =>
       `<span class="spike-badge ${a.severity}">${a.type.toUpperCase()} ${Math.round(a.value)}${getUnit(a.type)}</span>`
@@ -324,6 +324,7 @@ function updateGitSpikes(spikes) {
         <span class="spike-hash">${escHtml(spike.commitHash)}</span>
         <span class="spike-msg">${escHtml(spike.commitMessage || '')}</span>
         ${spike.branch ? `<span style="color:#7880a0;font-size:9px">on ${escHtml(spike.branch)}</span>` : ''}
+        <button class="copy-hash-btn" data-hash="${escHtml(spike.commitHash)}" title="Copy commit hash" style="margin-left:auto;background:none;border:none;cursor:pointer;font-size:11px;color:var(--text-muted);padding:0 2px;">📋</button>
       </div>` : '<div style="font-size:10px;color:#4a5068;margin-top:4px">No git repository detected</div>';
 
     return `
@@ -335,6 +336,16 @@ function updateGitSpikes(spikes) {
         ${commitSection}
       </div>`;
   }).join('');
+
+  list.querySelectorAll('.copy-hash-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      navigator.clipboard.writeText(btn.dataset.hash).then(() => {
+        const orig = btn.textContent;
+        btn.textContent = '✅';
+        setTimeout(() => { btn.textContent = orig; }, 1200);
+      });
+    });
+  });
 }
 
 // ── Lite Mode Status ───────────────────────────────────────────

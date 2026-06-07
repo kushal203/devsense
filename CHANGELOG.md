@@ -2,6 +2,12 @@
 
 All notable changes to DevSense will be documented here.
 
+## [1.0.15] - 2026-06-07
+
+### Added
+- ✨ Feature: Added a 📋 "Copy Commit Hash" button to each spike entry in the Git Spikes tab — click it to instantly copy the linked commit hash to your clipboard, with a ✅ confirmation animation.
+
+
 ## [1.0.14] - 2026-06-06
 
 ### Added
