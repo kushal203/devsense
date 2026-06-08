@@ -2,6 +2,12 @@
 
 All notable changes to DevSense will be documented here.
 
+## [1.0.17] - 2026-06-08
+
+### Added
+- ✨ UI Feature: CPU card now shows the live clock speed in GHz (e.g. ⚡ 3.60 GHz) so developers can see exactly how hard their processor is running.
+
+
 ## [1.0.16] - 2026-06-08
 
 ### Added

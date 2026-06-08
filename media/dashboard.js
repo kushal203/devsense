@@ -147,6 +147,9 @@ function updateMetrics(metrics) {
   updateCard('cpuCard', 'cpuValue', 'cpuBar', 'cpuMeta',
     cpu.usage, `${cpu.usage}%`,
     cpu.model || 'CPU');
+  if (cpu.speed && cpu.speed > 0) {
+    setText('cpuSpeed', `⚡ ${cpu.speed.toFixed(2)} GHz`);
+  }
 
   // RAM Card
   const usedGB = (ram.used / 1e9).toFixed(1);
