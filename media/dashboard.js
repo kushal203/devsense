@@ -151,9 +151,11 @@ function updateMetrics(metrics) {
   // RAM Card
   const usedGB = (ram.used / 1e9).toFixed(1);
   const totalGB = (ram.total / 1e9).toFixed(1);
+  const freeGB = ((ram.total - ram.used) / 1e9).toFixed(1);
   updateCard('ramCard', 'ramValue', 'ramBar', 'ramMeta',
     ram.usagePercent, `${ram.usagePercent}%`,
     `${usedGB}GB / ${totalGB}GB`);
+  setText('ramFree', `▼ ${freeGB}GB free`);
 
   // Temp Card
   if (cpu.temp > 0) {

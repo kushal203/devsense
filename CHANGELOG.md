@@ -2,6 +2,12 @@
 
 All notable changes to DevSense will be documented here.
 
+## [1.0.16] - 2026-06-08
+
+### Added
+- ✨ UI Feature: RAM card now shows a green "▼ X.XGB free" indicator below the usage bar, so you instantly know how much memory is still available without doing the math.
+
+
 ## [1.0.15] - 2026-06-07
 
 ### Added
