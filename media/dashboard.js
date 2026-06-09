@@ -194,6 +194,10 @@ function updateMetrics(metrics) {
   setText('diskRead', `${Math.round(disk.readSpeed)} ops/s`);
   setText('diskWrite', `${Math.round(disk.writeSpeed)} ops/s`);
   setText('diskUsage', `${Math.round(disk.usagePercent)}%`);
+  if (disk.free != null && disk.free > 0) {
+    const freeGB = (disk.free / 1e9).toFixed(1);
+    setText('diskFree', `${freeGB} GB`);
+  }
 
   // Battery
   if (battery.hasBattery) {

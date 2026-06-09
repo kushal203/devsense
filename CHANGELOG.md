@@ -2,6 +2,12 @@
 
 All notable changes to DevSense will be documented here.
 
+## [1.0.19] - 2026-06-09
+
+### Added
+- ✨ UI Feature: Disk card now shows free disk space in GB (highlighted in yellow) alongside read/write speeds so developers always know how much storage they have left.
+
+
 ## [1.0.18] - 2026-06-09
 
 ### Added
