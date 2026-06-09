@@ -176,6 +176,11 @@ function updateMetrics(metrics) {
     updateCard('gpuCard', 'gpuValue', 'gpuBar', 'gpuMeta',
       gpu.usage, `${gpu.usage}%`,
       gpu.name);
+    if (gpu.vram && gpu.vram > 0) {
+      const vramGB = (gpu.vram / 1024).toFixed(1);
+      const vramUsedGB = gpu.vramUsed ? (gpu.vramUsed / 1024).toFixed(1) : null;
+      setText('gpuVram', vramUsedGB ? `🟣 VRAM: ${vramUsedGB}GB / ${vramGB}GB` : `🟣 VRAM: ${vramGB}GB`);
+    }
   } else {
     setText('gpuValue', 'N/A');
     setText('gpuMeta', gpu.name || 'No GPU data');

@@ -2,6 +2,12 @@
 
 All notable changes to DevSense will be documented here.
 
+## [1.0.18] - 2026-06-09
+
+### Added
+- ✨ UI Feature: GPU card now displays live VRAM usage (e.g. 🟣 VRAM: 4.2GB / 8.0GB) so developers can monitor their graphics memory directly from the dashboard.
+
+
 ## [1.0.17] - 2026-06-08
 
 ### Added
