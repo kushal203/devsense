@@ -166,6 +166,18 @@ function updateMetrics(metrics) {
     updateCard('tempCard', 'tempValue', 'tempBar', 'tempMeta',
       tempPct, `${cpu.temp}°C`,
       'CPU Temperature');
+
+    // Color-code the temp value based on severity
+    const tempValueEl = document.getElementById('tempValue');
+    if (cpu.temp >= 90) {
+      tempValueEl.style.color = 'var(--accent-red)';
+    } else if (cpu.temp >= 75) {
+      tempValueEl.style.color = 'var(--accent-orange)';
+    } else if (cpu.temp >= 60) {
+      tempValueEl.style.color = 'var(--accent-yellow)';
+    } else {
+      tempValueEl.style.color = 'var(--accent-green)';
+    }
   } else {
     setText('tempValue', 'N/A');
     setText('tempMeta', 'Not available');

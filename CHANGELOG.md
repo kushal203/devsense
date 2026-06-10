@@ -2,6 +2,12 @@
 
 All notable changes to DevSense will be documented here.
 
+## [1.0.20] - 2026-06-10
+
+### Added
+- ✨ UI Feature: Temperature card now uses smart color-coding — green (safe), yellow (warm ≥60°C), orange (hot ≥75°C), red (critical ≥90°C) — so you can spot thermal issues at a glance.
+
+
 ## [1.0.19] - 2026-06-09
 
 ### Added
