@@ -2,6 +2,12 @@
 
 All notable changes to DevSense will be documented here.
 
+## [1.0.23] - 2026-06-10
+
+### Fixed
+- 📸 Docs: Replaced relative screenshot paths in README with public CDN/hosted URLs so they render correctly on the Open VSX registry website.
+
+
 ## [1.0.22] - 2026-06-10
 
 ### Added
