@@ -11,6 +11,19 @@ DevSense transforms VS Code, VSCodium, Gitpod, and Eclipse Theia into a **hardwa
 
 ---
 
+## 📸 Screenshots
+
+### 📊 Live Hardware Dashboard
+![DevSense Hardware Dashboard](images/screenshot-dashboard.png)
+
+### 📋 Process Manager — Kill runaway processes in one click
+![DevSense Process Manager](images/screenshot-processes.png)
+
+### 🔴 Status Bar Vitals — Always visible hardware health
+![DevSense Status Bar](images/screenshot-statusbar.png)
+
+---
+
 ## 🚀 Quick Start
 
 **Step 1** — Install DevSense from [Open VSX Registry](https://open-vsx.org/extension/devsense-team/devsense)

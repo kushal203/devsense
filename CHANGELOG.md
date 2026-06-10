@@ -2,6 +2,12 @@
 
 All notable changes to DevSense will be documented here.
 
+## [1.0.22] - 2026-06-10
+
+### Added
+- 📸 Docs: Added 3 high-quality screenshots to the README — Hardware Dashboard, Process Manager, and Status Bar vitals — making the extension page much more attractive on Open VSX.
+
+
 ## [1.0.21] - 2026-06-10
 
 ### Improved
