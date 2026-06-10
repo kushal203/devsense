@@ -2,6 +2,12 @@
 
 All notable changes to DevSense will be documented here.
 
+## [1.0.24] - 2026-06-10
+
+### Fixed
+- 📸 Docs: Changed screenshot image URLs in README to use official raw GitHub usercontent links for maximum reliability and branding consistency.
+
+
 ## [1.0.23] - 2026-06-10
 
 ### Fixed

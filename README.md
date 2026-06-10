@@ -14,13 +14,13 @@ DevSense transforms VS Code, VSCodium, Gitpod, and Eclipse Theia into a **hardwa
 ## 📸 Screenshots
 
 ### 📊 Live Hardware Dashboard
-![DevSense Hardware Dashboard](https://files.catbox.moe/azxgy9.png)
+![DevSense Hardware Dashboard](https://raw.githubusercontent.com/kushal203/devsense/master/images/screenshot-dashboard.png)
 
 ### 📋 Process Manager — Kill runaway processes in one click
-![DevSense Process Manager](https://files.catbox.moe/2t9wz9.png)
+![DevSense Process Manager](https://raw.githubusercontent.com/kushal203/devsense/master/images/screenshot-processes.png)
 
 ### 🔴 Status Bar Vitals — Always visible hardware health
-![DevSense Status Bar](https://files.catbox.moe/rmvqrv.png)
+![DevSense Status Bar](https://raw.githubusercontent.com/kushal203/devsense/master/images/screenshot-statusbar.png)
 
 
 ---
