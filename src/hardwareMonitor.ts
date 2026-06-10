@@ -23,6 +23,8 @@ export interface HardwareMetrics {
     temp: number;           // °C, -1 if unavailable
     memUsed: number;        // MB
     memTotal: number;       // MB
+    vram?: number;          // MB
+    vramUsed?: number;      // MB
   };
   disk: {
     readSpeed: number;      // MB/s
@@ -114,7 +116,8 @@ export class HardwareMonitor extends EventEmitter {
       mem,
       netStats,
       diskIO,
-      battery
+      battery,
+      cpuSpeed
     ] = await Promise.all([
       si.currentLoad().catch(() => null),
       si.cpuTemperature().catch(() => null),
@@ -122,6 +125,7 @@ export class HardwareMonitor extends EventEmitter {
       si.networkStats().catch(() => null),
       si.disksIO().catch(() => null),
       si.battery().catch(() => null),
+      si.cpuCurrentSpeed().catch(() => null),
     ]);
 
     // GPU
@@ -182,7 +186,7 @@ export class HardwareMonitor extends EventEmitter {
         usage: Math.round(cpuLoad?.currentLoad ?? 0),
         temp: cpuTemp?.main ?? cpuTemp?.cores?.[0] ?? -1,
         cores: cpuCores,
-        speed: 0,
+        speed: cpuSpeed?.avg || 0,
         model: this.cachedStaticInfo.cpuModel || 'CPU'
       },
       ram: {
@@ -196,7 +200,9 @@ export class HardwareMonitor extends EventEmitter {
         usage: gpuUsage,
         temp: gpuTemp,
         memUsed: gpuMemUsed,
-        memTotal: gpuMemTotal
+        memTotal: gpuMemTotal,
+        vram: gpuMemTotal,
+        vramUsed: gpuMemUsed
       },
       disk: {
         readSpeed: readSpeed,
@@ -209,7 +215,7 @@ export class HardwareMonitor extends EventEmitter {
       },
       battery: {
         hasBattery: battery?.hasBattery ?? false,
-        percent: battery?.percent ?? 100,
+        percent: typeof battery?.percent === 'number' && !isNaN(battery.percent) ? Math.min(100, Math.max(0, battery.percent)) : 100,
         isCharging: battery?.isCharging ?? true,
         timeRemaining: battery?.timeRemaining ?? -1
       },

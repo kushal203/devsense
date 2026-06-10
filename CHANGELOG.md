@@ -2,6 +2,14 @@
 
 All notable changes to DevSense will be documented here.
 
+## [1.0.25] - 2026-06-10
+
+### Fixed
+- 🖥️ CPU: Switched from a static frequency placeholder to dynamic current CPU frequency queries.
+- 🎮 GPU: Fixed GPU VRAM property mapping so allocation values render correctly on the dashboard card.
+- 🔋 Battery: Robustly clamped battery percentage metrics to the valid `0-100` range to handle faulty system driver/firmware reports.
+
+
 ## [1.0.24] - 2026-06-10
 
 ### Fixed
