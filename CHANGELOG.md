@@ -2,6 +2,14 @@
 
 All notable changes to DevSense will be documented here.
 
+## [1.0.21] - 2026-06-10
+
+### Improved
+- 🚀 SEO: Expanded keywords list (20 tags including vscodium, gitpod, theia, anomaly detection, real-time) for better Open VSX discoverability.
+- 📖 Docs: Completely revamped README with Open VSX/download badges, CLI install command, quick-start steps, platform/editor compatibility tables, and feature breakdown.
+- 🗂️ Metadata: Added "Debuggers" category and improved extension description for search relevance.
+
+
 ## [1.0.20] - 2026-06-10
 
 ### Added
