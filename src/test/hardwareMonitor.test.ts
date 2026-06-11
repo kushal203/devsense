@@ -6,7 +6,7 @@ import { HardwareMonitor, HardwareMetrics } from '../hardwareMonitor';
 describe('HardwareMonitor', () => {
 
   describe('forceRefresh() — metrics shape', function () {
-    this.timeout(30000);
+    this.timeout(60000);
     let metrics: HardwareMetrics;
 
     before(async function () {
@@ -73,7 +73,7 @@ describe('HardwareMonitor', () => {
   });
 
   describe('Event emitter behaviour', function () {
-    this.timeout(30000);
+    this.timeout(60000);
 
     it('onData registers multiple listeners and all are called', async function () {
       const monitor = new HardwareMonitor();

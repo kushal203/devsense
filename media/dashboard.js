@@ -10,6 +10,8 @@ const state = {
   ramHistory: new Array(MAX_HISTORY).fill(0),
   netDownHistory: new Array(MAX_HISTORY).fill(0),
   netUpHistory: new Array(MAX_HISTORY).fill(0),
+  diskReadHistory: new Array(MAX_HISTORY).fill(0),
+  diskWriteHistory: new Array(MAX_HISTORY).fill(0),
   labels: new Array(MAX_HISTORY).fill(''),
   lastMetrics: null,
 };
@@ -40,7 +42,7 @@ const chartDefaults = {
   elements: { point: { radius: 0 }, line: { tension: 0.4, borderWidth: 2 } }
 };
 
-let cpuChart, ramChart, netChart;
+let cpuChart, ramChart, netChart, diskChart;
 
 function initCharts() {
   const cpuCtx = document.getElementById('cpuChart').getContext('2d');
@@ -100,6 +102,35 @@ function initCharts() {
       ]
     },
     options: netOptions
+  });
+
+  const diskCtx = document.getElementById('diskChart').getContext('2d');
+  const diskOptions = structuredClone(chartDefaults);
+  delete diskOptions.scales.y.max;
+  diskOptions.scales.y.ticks.callback = (v) => formatOps(v);
+
+  diskChart = new Chart(diskCtx, {
+    type: 'line',
+    data: {
+      labels: [...state.labels],
+      datasets: [
+        {
+          label: 'Read',
+          data: [...state.diskReadHistory],
+          borderColor: '#f59e0b',
+          backgroundColor: 'rgba(245,158,11,0.06)',
+          fill: true
+        },
+        {
+          label: 'Write',
+          data: [...state.diskWriteHistory],
+          borderColor: '#ef4444',
+          backgroundColor: 'rgba(239,68,68,0.06)',
+          fill: true
+        }
+      ]
+    },
+    options: diskOptions
   });
 }
 
@@ -175,6 +206,10 @@ function updateMetrics(metrics) {
   state.netDownHistory.shift();
   state.netUpHistory.push(network.uploadSpeed);
   state.netUpHistory.shift();
+  state.diskReadHistory.push(disk.readSpeed);
+  state.diskReadHistory.shift();
+  state.diskWriteHistory.push(disk.writeSpeed);
+  state.diskWriteHistory.shift();
   state.labels.push(time);
   state.labels.shift();
 
@@ -254,7 +289,7 @@ function updateMetrics(metrics) {
   }
 
   // Charts
-  if (cpuChart && ramChart && netChart) {
+  if (cpuChart && ramChart && netChart && diskChart) {
     cpuChart.data.labels = [...state.labels];
     cpuChart.data.datasets[0].data = [...state.cpuHistory];
     cpuChart.update('none');
@@ -267,6 +302,11 @@ function updateMetrics(metrics) {
     netChart.data.datasets[0].data = [...state.netDownHistory];
     netChart.data.datasets[1].data = [...state.netUpHistory];
     netChart.update('none');
+
+    diskChart.data.labels = [...state.labels];
+    diskChart.data.datasets[0].data = [...state.diskReadHistory];
+    diskChart.data.datasets[1].data = [...state.diskWriteHistory];
+    diskChart.update('none');
   }
 
   // CPU Cores
@@ -451,6 +491,11 @@ function setText(id, text) {
 function formatSpeed(kbps) {
   if (kbps >= 1024) { return `${(kbps / 1024).toFixed(1)} MB/s`; }
   return `${Math.round(kbps)} KB/s`;
+}
+
+function formatOps(v) {
+  if (v >= 1000) { return `${(v / 1000).toFixed(1)}k ops/s`; }
+  return `${Math.round(v)} ops/s`;
 }
 
 function getUnit(type) {

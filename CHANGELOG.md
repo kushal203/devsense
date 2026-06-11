@@ -2,6 +2,13 @@
 
 All notable changes to DevSense will be documented here.
 
+## [1.0.27] - 2026-06-11
+
+### Added
+- 💾 Disk: Added real-time Disk History Chart displaying dual-line tracking for Disk Read and Write speeds (IOPS / operations per second) over the last 60 seconds.
+- 🧪 Test: Increased WMI unit test timeout limits to 60s for enhanced resilience against transient Windows host load/latency.
+
+
 ## [1.0.26] - 2026-06-11
 
 ### Added
