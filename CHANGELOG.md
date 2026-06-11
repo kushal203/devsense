@@ -2,6 +2,12 @@
 
 All notable changes to DevSense will be documented here.
 
+## [1.0.26] - 2026-06-11
+
+### Added
+- 🌐 Network: Added real-time Network History Chart displaying dual-line tracking for Upload and Download speeds over the last 60 seconds.
+
+
 ## [1.0.25] - 2026-06-10
 
 ### Fixed

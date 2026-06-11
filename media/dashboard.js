@@ -8,6 +8,8 @@ const MAX_HISTORY = 60;
 const state = {
   cpuHistory: new Array(MAX_HISTORY).fill(0),
   ramHistory: new Array(MAX_HISTORY).fill(0),
+  netDownHistory: new Array(MAX_HISTORY).fill(0),
+  netUpHistory: new Array(MAX_HISTORY).fill(0),
   labels: new Array(MAX_HISTORY).fill(''),
   lastMetrics: null,
 };
@@ -38,7 +40,7 @@ const chartDefaults = {
   elements: { point: { radius: 0 }, line: { tension: 0.4, borderWidth: 2 } }
 };
 
-let cpuChart, ramChart;
+let cpuChart, ramChart, netChart;
 
 function initCharts() {
   const cpuCtx = document.getElementById('cpuChart').getContext('2d');
@@ -69,6 +71,35 @@ function initCharts() {
       }]
     },
     options: structuredClone(chartDefaults)
+  });
+
+  const netCtx = document.getElementById('netChart').getContext('2d');
+  const netOptions = structuredClone(chartDefaults);
+  delete netOptions.scales.y.max;
+  netOptions.scales.y.ticks.callback = (v) => formatSpeed(v);
+
+  netChart = new Chart(netCtx, {
+    type: 'line',
+    data: {
+      labels: [...state.labels],
+      datasets: [
+        {
+          label: 'Download',
+          data: [...state.netDownHistory],
+          borderColor: '#06b6d4',
+          backgroundColor: 'rgba(6,182,212,0.06)',
+          fill: true
+        },
+        {
+          label: 'Upload',
+          data: [...state.netUpHistory],
+          borderColor: '#a855f7',
+          backgroundColor: 'rgba(168,85,247,0.06)',
+          fill: true
+        }
+      ]
+    },
+    options: netOptions
   });
 }
 
@@ -140,6 +171,10 @@ function updateMetrics(metrics) {
   state.cpuHistory.shift();
   state.ramHistory.push(ram.usagePercent);
   state.ramHistory.shift();
+  state.netDownHistory.push(network.downloadSpeed);
+  state.netDownHistory.shift();
+  state.netUpHistory.push(network.uploadSpeed);
+  state.netUpHistory.shift();
   state.labels.push(time);
   state.labels.shift();
 
@@ -219,7 +254,7 @@ function updateMetrics(metrics) {
   }
 
   // Charts
-  if (cpuChart && ramChart) {
+  if (cpuChart && ramChart && netChart) {
     cpuChart.data.labels = [...state.labels];
     cpuChart.data.datasets[0].data = [...state.cpuHistory];
     cpuChart.update('none');
@@ -227,6 +262,11 @@ function updateMetrics(metrics) {
     ramChart.data.labels = [...state.labels];
     ramChart.data.datasets[0].data = [...state.ramHistory];
     ramChart.update('none');
+
+    netChart.data.labels = [...state.labels];
+    netChart.data.datasets[0].data = [...state.netDownHistory];
+    netChart.data.datasets[1].data = [...state.netUpHistory];
+    netChart.update('none');
   }
 
   // CPU Cores
