@@ -2,6 +2,13 @@
 
 All notable changes to DevSense will be documented here.
 
+## [1.0.29] - 2026-06-12
+
+### Improved
+- 🚀 SEO: Added highly searched keywords (task manager, memory monitor, performance dashboard, IDE performance) to package manifest.
+- 📖 Docs: Weaved targeted SEO keywords into the extension's README to rank higher in VS Code Marketplace searches.
+
+
 ## [1.0.28] - 2026-06-12
 
 ### Added

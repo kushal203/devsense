@@ -11,6 +11,12 @@ DevSense transforms VS Code, VSCodium, Gitpod, and Eclipse Theia into a **hardwa
 
 ---
 
+## 💡 Why DevSense?
+
+DevSense acts as a complete **VS Code task manager** and **performance dashboard**. Whether you need a reliable **memory monitor** to track down memory leaks in your Node.js app, or a **CPU monitor** to see if your build scripts are maxing out your cores, DevSense gives you unparalleled visibility into your **IDE performance**. Stop switching windows to check your OS task manager — get all your **hardware vitals** directly where you code.
+
+---
+
 ## 📸 Screenshots
 
 ### 📊 Live Hardware Dashboard
