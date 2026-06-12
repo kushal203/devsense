@@ -12,6 +12,8 @@ const state = {
   netUpHistory: new Array(MAX_HISTORY).fill(0),
   diskReadHistory: new Array(MAX_HISTORY).fill(0),
   diskWriteHistory: new Array(MAX_HISTORY).fill(0),
+  gpuUsageHistory: new Array(MAX_HISTORY).fill(0),
+  gpuVramHistory: new Array(MAX_HISTORY).fill(0),
   labels: new Array(MAX_HISTORY).fill(''),
   lastMetrics: null,
 };
@@ -42,7 +44,7 @@ const chartDefaults = {
   elements: { point: { radius: 0 }, line: { tension: 0.4, borderWidth: 2 } }
 };
 
-let cpuChart, ramChart, netChart, diskChart;
+let cpuChart, ramChart, netChart, diskChart, gpuChart;
 
 function initCharts() {
   const cpuCtx = document.getElementById('cpuChart').getContext('2d');
@@ -132,6 +134,31 @@ function initCharts() {
     },
     options: diskOptions
   });
+
+  const gpuCtx = document.getElementById('gpuChart').getContext('2d');
+  gpuChart = new Chart(gpuCtx, {
+    type: 'line',
+    data: {
+      labels: [...state.labels],
+      datasets: [
+        {
+          label: 'Core Usage',
+          data: [...state.gpuUsageHistory],
+          borderColor: '#8b5cf6',
+          backgroundColor: 'rgba(139,92,246,0.06)',
+          fill: true
+        },
+        {
+          label: 'VRAM Usage',
+          data: [...state.gpuVramHistory],
+          borderColor: '#ec4899',
+          backgroundColor: 'rgba(236,72,153,0.06)',
+          fill: true
+        }
+      ]
+    },
+    options: structuredClone(chartDefaults)
+  });
 }
 
 // ── Tab Navigation ─────────────────────────────────────────────
@@ -210,6 +237,17 @@ function updateMetrics(metrics) {
   state.diskReadHistory.shift();
   state.diskWriteHistory.push(disk.writeSpeed);
   state.diskWriteHistory.shift();
+
+  state.gpuUsageHistory.push(gpu.usage >= 0 ? gpu.usage : 0);
+  state.gpuUsageHistory.shift();
+
+  let vramPct = 0;
+  if (gpu.vram && gpu.vram > 0 && gpu.vramUsed) {
+    vramPct = Math.round((gpu.vramUsed / gpu.vram) * 100);
+  }
+  state.gpuVramHistory.push(vramPct);
+  state.gpuVramHistory.shift();
+
   state.labels.push(time);
   state.labels.shift();
 
@@ -263,9 +301,13 @@ function updateMetrics(metrics) {
       const vramUsedGB = gpu.vramUsed ? (gpu.vramUsed / 1024).toFixed(1) : null;
       setText('gpuVram', vramUsedGB ? `🟣 VRAM: ${vramUsedGB}GB / ${vramGB}GB` : `🟣 VRAM: ${vramGB}GB`);
     }
+    const gpuContainer = document.getElementById('gpuChartContainer');
+    if (gpuContainer) { gpuContainer.style.display = 'block'; }
   } else {
     setText('gpuValue', 'N/A');
     setText('gpuMeta', gpu.name || 'No GPU data');
+    const gpuContainer = document.getElementById('gpuChartContainer');
+    if (gpuContainer) { gpuContainer.style.display = 'none'; }
   }
 
   // Network
@@ -289,7 +331,7 @@ function updateMetrics(metrics) {
   }
 
   // Charts
-  if (cpuChart && ramChart && netChart && diskChart) {
+  if (cpuChart && ramChart && netChart && diskChart && gpuChart) {
     cpuChart.data.labels = [...state.labels];
     cpuChart.data.datasets[0].data = [...state.cpuHistory];
     cpuChart.update('none');
@@ -307,6 +349,11 @@ function updateMetrics(metrics) {
     diskChart.data.datasets[0].data = [...state.diskReadHistory];
     diskChart.data.datasets[1].data = [...state.diskWriteHistory];
     diskChart.update('none');
+
+    gpuChart.data.labels = [...state.labels];
+    gpuChart.data.datasets[0].data = [...state.gpuUsageHistory];
+    gpuChart.data.datasets[1].data = [...state.gpuVramHistory];
+    gpuChart.update('none');
   }
 
   // CPU Cores

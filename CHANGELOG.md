@@ -2,6 +2,12 @@
 
 All notable changes to DevSense will be documented here.
 
+## [1.0.28] - 2026-06-12
+
+### Added
+- 🎮 GPU: Added real-time GPU History Chart displaying dual-line tracking for GPU Core Usage percentage and VRAM Allocation percentage over the last 60 seconds (automatically shown on systems with an active GPU).
+
+
 ## [1.0.27] - 2026-06-11
 
 ### Added
