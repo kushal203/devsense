@@ -2,6 +2,12 @@
 
 All notable changes to DevSense will be documented here.
 
+## [1.0.31] - 2026-06-13
+
+### Optimized
+- Routine release optimization and pipeline update.
+
+
 ## [1.0.30] - 2026-06-13
 
 ### Optimized
