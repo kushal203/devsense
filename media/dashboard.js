@@ -359,8 +359,91 @@ function updateMetrics(metrics) {
   // CPU Cores
   updateCores(cpu.cores);
 
+  // Health Score
+  updateHealthScore(metrics);
+
   // Alerts
   checkAlerts(metrics);
+}
+
+function updateHealthScore(metrics) {
+  const { cpu, ram, gpu } = metrics;
+
+  // Compute penalty for each factor (0 = perfect, 100 = worst)
+  const cpuPenalty = cpu.usage;
+  const ramPenalty = ram.usagePercent;
+
+  let tempPenalty = 0;
+  if (cpu.temp > 0) {
+    // Map 0-100°C to 0-100 penalty
+    tempPenalty = Math.min(100, cpu.temp);
+  }
+
+  let gpuPenalty = 0;
+  let hasGpu = false;
+  if (gpu.usage >= 0) {
+    hasGpu = true;
+    gpuPenalty = gpu.usage;
+  }
+
+  // Weighted average penalty
+  let totalWeight = 0;
+  let totalPenalty = 0;
+
+  totalPenalty += cpuPenalty * 35; totalWeight += 35;
+  totalPenalty += ramPenalty * 30; totalWeight += 30;
+  if (cpu.temp > 0) { totalPenalty += tempPenalty * 25; totalWeight += 25; }
+  if (hasGpu)       { totalPenalty += gpuPenalty * 10; totalWeight += 10; }
+
+  const avgPenalty = totalWeight > 0 ? totalPenalty / totalWeight : 0;
+  const score = Math.round(100 - avgPenalty);
+
+  // Color thresholds
+  let color, label;
+  if (score >= 80)      { color = '#22d3a4'; label = 'Healthy'; }   // green
+  else if (score >= 55) { color = '#f59e0b'; label = 'Moderate'; }  // yellow
+  else if (score >= 30) { color = '#f97316'; label = 'Stressed'; }  // orange
+  else                  { color = '#ef4444'; label = 'Critical'; }   // red
+
+  // Update ring
+  const circumference = 201.06;
+  const offset = circumference - (score / 100) * circumference;
+  const ring = document.getElementById('healthRingFill');
+  if (ring) {
+    ring.style.strokeDashoffset = offset;
+    ring.style.stroke = color;
+  }
+
+  setText('healthScoreNum', String(score));
+  const titleEl = document.getElementById('healthTitle');
+  if (titleEl) {
+    titleEl.textContent = `System Health — ${label}`;
+    titleEl.style.color = color;
+  }
+
+  // Factor dots + values
+  function factorColor(penalty) {
+    if (penalty < 60) return '#22d3a4';
+    if (penalty < 80) return '#f59e0b';
+    if (penalty < 90) return '#f97316';
+    return '#ef4444';
+  }
+
+  const cpuDot = document.getElementById('hfCpuDot');
+  if (cpuDot) cpuDot.style.background = factorColor(cpuPenalty);
+  setText('hfCpu', `${cpu.usage}%`);
+
+  const ramDot = document.getElementById('hfRamDot');
+  if (ramDot) ramDot.style.background = factorColor(ramPenalty);
+  setText('hfRam', `${ram.usagePercent}%`);
+
+  const tempDot = document.getElementById('hfTempDot');
+  if (tempDot) tempDot.style.background = cpu.temp > 0 ? factorColor(tempPenalty) : '#4a5068';
+  setText('hfTemp', cpu.temp > 0 ? `${cpu.temp}°C` : 'N/A');
+
+  const gpuDot = document.getElementById('hfGpuDot');
+  if (gpuDot) gpuDot.style.background = hasGpu ? factorColor(gpuPenalty) : '#4a5068';
+  setText('hfGpu', hasGpu ? `${gpu.usage}%` : 'N/A');
 }
 
 function updateCard(cardId, valueId, barId, metaId, pct, valueText, metaText) {

@@ -2,6 +2,12 @@
 
 All notable changes to DevSense will be documented here.
 
+## [1.0.32] - 2026-06-14
+
+### Added
+- 🏆 **System Health Score**: A live animated ring gauge (0–100) always visible between the header and tabs. It aggregates CPU, RAM, temperature and GPU usage into one instant health number — color-coded green (Healthy) → yellow (Moderate) → orange (Stressed) → red (Critical). Each contributing factor is shown with its own color-coded dot for a quick breakdown at a glance.
+
+
 ## [1.0.31] - 2026-06-13
 
 ### Optimized

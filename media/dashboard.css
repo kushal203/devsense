@@ -417,3 +417,95 @@ canvas { display: block; width: 100% !important; }
 ::-webkit-scrollbar-track { background: transparent; }
 ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
 ::-webkit-scrollbar-thumb:hover { background: var(--text-muted); }
+
+/* ── System Health Score Bar ── */
+.health-score-bar {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 10px 14px 10px;
+  background: linear-gradient(135deg, rgba(79,125,244,0.06) 0%, rgba(139,92,246,0.06) 100%);
+  border-bottom: 1px solid var(--border);
+}
+
+.health-ring-wrap {
+  position: relative;
+  width: 64px;
+  height: 64px;
+  flex-shrink: 0;
+}
+.health-ring {
+  width: 64px;
+  height: 64px;
+  transform: rotate(-90deg);
+}
+.health-ring-bg {
+  fill: none;
+  stroke: rgba(255,255,255,0.06);
+  stroke-width: 7;
+}
+.health-ring-fill {
+  fill: none;
+  stroke: #22d3a4;
+  stroke-width: 7;
+  stroke-linecap: round;
+  stroke-dasharray: 201.06;
+  stroke-dashoffset: 201.06;
+  transition: stroke-dashoffset 0.8s ease, stroke 0.5s ease;
+  filter: drop-shadow(0 0 5px currentColor);
+}
+.health-ring-label {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0;
+}
+.health-score-num {
+  font-size: 17px;
+  font-weight: 800;
+  color: var(--text-primary);
+  line-height: 1;
+}
+.health-score-sub {
+  font-size: 7px;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-top: 1px;
+}
+
+.health-breakdown {
+  flex: 1;
+  min-width: 0;
+}
+.health-title {
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin-bottom: 6px;
+}
+.health-factors {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 4px 10px;
+}
+.hf-item {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 10px;
+}
+.hf-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--accent-green);
+  flex-shrink: 0;
+  box-shadow: 0 0 4px currentColor;
+}
+.hf-key { color: var(--text-muted); flex: 1; }
+.hf-val { font-weight: 600; color: var(--text-primary); }
+

@@ -45,6 +45,29 @@
       <button class="btn-refresh" id="disableLiteBannerBtn" style="border-color: rgba(245, 158, 11, 0.4); color: var(--accent-yellow); background: rgba(245, 158, 11, 0.1);">Disable</button>
     </div>
 
+    <!-- System Health Score -->
+    <div class="health-score-bar" id="healthScoreBar">
+      <div class="health-ring-wrap">
+        <svg class="health-ring" viewBox="0 0 80 80" xmlns="http://www.w3.org/2000/svg">
+          <circle class="health-ring-bg" cx="40" cy="40" r="32" />
+          <circle class="health-ring-fill" id="healthRingFill" cx="40" cy="40" r="32" />
+        </svg>
+        <div class="health-ring-label">
+          <span class="health-score-num" id="healthScoreNum">–</span>
+          <span class="health-score-sub">Health</span>
+        </div>
+      </div>
+      <div class="health-breakdown">
+        <div class="health-title" id="healthTitle">System Health Score</div>
+        <div class="health-factors">
+          <div class="hf-item"><span class="hf-dot" id="hfCpuDot"></span><span class="hf-key">CPU</span><span class="hf-val" id="hfCpu">–</span></div>
+          <div class="hf-item"><span class="hf-dot" id="hfRamDot"></span><span class="hf-key">RAM</span><span class="hf-val" id="hfRam">–</span></div>
+          <div class="hf-item"><span class="hf-dot" id="hfTempDot"></span><span class="hf-key">Temp</span><span class="hf-val" id="hfTemp">–</span></div>
+          <div class="hf-item"><span class="hf-dot" id="hfGpuDot"></span><span class="hf-key">GPU</span><span class="hf-val" id="hfGpu">–</span></div>
+        </div>
+      </div>
+    </div>
+
     <!-- Tab Navigation -->
     <div class="tabs">
       <button class="tab active" data-tab="overview" id="tab-overview">Overview</button>
