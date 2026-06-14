@@ -2,6 +2,13 @@
 
 All notable changes to DevSense will be documented here.
 
+## [1.0.34] - 2026-06-14
+
+### Improved
+- 🚀 **SEO Overhaul**: Updated `displayName` to include "VS Code System Monitor & Performance Dashboard" for better search discoverability. Rewrote `description` to mention system health score and session peak tracker. Reordered keywords to prioritise highest-traffic terms (system monitor, cpu monitor, ram monitor).
+- 📖 **README Rewrite**: Completely revamped README with FAQ section (6 common developer questions), "Use Cases" section covering 6 developer personas, a full comparison table (DevSense vs OS Task Manager vs htop/btop), keyword-rich headings, and naturally embedded long-tail search terms like "VS Code task manager", "vscode performance monitor", and "gpu monitor VS Code".
+
+
 ## [1.0.33] - 2026-06-14
 
 ### Added
