@@ -2,6 +2,12 @@
 
 All notable changes to DevSense will be documented here.
 
+## [1.0.33] - 2026-06-14
+
+### Added
+- 📈 **Session Peak Tracker**: A compact strip below the Health Score shows the all-time high CPU%, RAM%, Temperature, and GPU% recorded since VS Code opened. Each new peak flashes yellow to highlight it. Includes a ↺ Reset button to clear peaks and start fresh — perfect for tracking what spiked during a build or test run.
+
+
 ## [1.0.32] - 2026-06-14
 
 ### Added

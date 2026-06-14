@@ -18,6 +18,15 @@ const state = {
   lastMetrics: null,
 };
 
+// ── Session Peaks ────────────────────────────────────────────────
+const peaks = { cpu: 0, ram: 0, temp: -1, gpu: -1 };
+
+function resetPeaks() {
+  peaks.cpu = 0; peaks.ram = 0; peaks.temp = -1; peaks.gpu = -1;
+  setText('peakCpu', '–'); setText('peakRam', '–');
+  setText('peakTemp', '–'); setText('peakGpu', '–');
+}
+
 // ── Chart Setup ──────────────────────────────────────────────────
 const chartDefaults = {
   responsive: true,
@@ -211,6 +220,8 @@ document.getElementById('clearSpikes').addEventListener('click', () => {
   vscode.postMessage({ type: 'clearSpikes' });
 });
 
+document.getElementById('peaksResetBtn').addEventListener('click', resetPeaks);
+
 // ── Metrics Update ─────────────────────────────────────────────
 function updateMetrics(metrics) {
   state.lastMetrics = metrics;
@@ -359,11 +370,39 @@ function updateMetrics(metrics) {
   // CPU Cores
   updateCores(cpu.cores);
 
+  // Session Peaks
+  updatePeaks(metrics);
+
   // Health Score
   updateHealthScore(metrics);
 
   // Alerts
   checkAlerts(metrics);
+}
+
+function updatePeaks(metrics) {
+  const { cpu, ram, gpu } = metrics;
+
+  if (cpu.usage > peaks.cpu) {
+    peaks.cpu = cpu.usage;
+    const el = document.getElementById('peakCpu');
+    if (el) { el.textContent = `${cpu.usage}%`; el.classList.add('peak-flash'); setTimeout(() => el.classList.remove('peak-flash'), 600); }
+  }
+  if (ram.usagePercent > peaks.ram) {
+    peaks.ram = ram.usagePercent;
+    const el = document.getElementById('peakRam');
+    if (el) { el.textContent = `${ram.usagePercent}%`; el.classList.add('peak-flash'); setTimeout(() => el.classList.remove('peak-flash'), 600); }
+  }
+  if (cpu.temp > 0 && cpu.temp > peaks.temp) {
+    peaks.temp = cpu.temp;
+    const el = document.getElementById('peakTemp');
+    if (el) { el.textContent = `${cpu.temp}°C`; el.classList.add('peak-flash'); setTimeout(() => el.classList.remove('peak-flash'), 600); }
+  }
+  if (gpu.usage >= 0 && gpu.usage > peaks.gpu) {
+    peaks.gpu = gpu.usage;
+    const el = document.getElementById('peakGpu');
+    if (el) { el.textContent = `${gpu.usage}%`; el.classList.add('peak-flash'); setTimeout(() => el.classList.remove('peak-flash'), 600); }
+  }
 }
 
 function updateHealthScore(metrics) {

@@ -68,6 +68,30 @@
       </div>
     </div>
 
+    <!-- Session Peaks -->
+    <div class="peaks-bar" id="peaksBar">
+      <span class="peaks-label">📈 Session Peaks</span>
+      <div class="peaks-items">
+        <div class="peak-item" title="Peak CPU usage this session">
+          <span class="peak-icon">🖥️</span>
+          <span class="peak-val" id="peakCpu">–</span>
+        </div>
+        <div class="peak-item" title="Peak RAM usage this session">
+          <span class="peak-icon">🧠</span>
+          <span class="peak-val" id="peakRam">–</span>
+        </div>
+        <div class="peak-item" title="Peak CPU temperature this session">
+          <span class="peak-icon">🌡️</span>
+          <span class="peak-val" id="peakTemp">–</span>
+        </div>
+        <div class="peak-item" title="Peak GPU usage this session">
+          <span class="peak-icon">🎮</span>
+          <span class="peak-val" id="peakGpu">–</span>
+        </div>
+      </div>
+      <button class="peaks-reset" id="peaksResetBtn" title="Reset session peaks">↺</button>
+    </div>
+
     <!-- Tab Navigation -->
     <div class="tabs">
       <button class="tab active" data-tab="overview" id="tab-overview">Overview</button>
