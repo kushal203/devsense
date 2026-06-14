@@ -572,3 +572,38 @@ canvas { display: block; width: 100% !important; }
   100% { color: var(--accent-blue);   transform: scale(1); }
 }
 .peak-flash { animation: peakFlash 0.5s ease-out forwards; }
+
+/* ── Memory Leak Banner ── */
+.leak-banner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 8px 14px;
+  background: rgba(245, 158, 11, 0.1);
+  border-bottom: 1px solid rgba(245, 158, 11, 0.35);
+  font-size: 11px;
+  color: var(--accent-yellow);
+  animation: slideDown 0.3s ease;
+}
+.leak-banner strong { color: #fbbf24; }
+
+/* ── CPU Boost Badge ── */
+.boost-badge {
+  display: inline-block;
+  background: linear-gradient(135deg, #f59e0b, #ef4444);
+  color: #fff;
+  font-size: 8px;
+  font-weight: 800;
+  padding: 1px 5px;
+  border-radius: 4px;
+  letter-spacing: 0.5px;
+  animation: boostPulse 1.5s ease-in-out infinite;
+  vertical-align: middle;
+  margin-left: 3px;
+}
+@keyframes boostPulse {
+  0%, 100% { opacity: 1; box-shadow: 0 0 6px rgba(245,158,11,0.6); }
+  50%       { opacity: 0.75; box-shadow: 0 0 12px rgba(245,158,11,0.9); }
+}
+

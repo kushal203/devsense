@@ -27,6 +27,39 @@ function resetPeaks() {
   setText('peakTemp', '–'); setText('peakGpu', '–');
 }
 
+// ── RAM Trend / Memory Leak Detector ────────────────────────────
+// Stores last 30 RAM readings to compute trend
+const ramTrendWindow = 30;
+const ramSamples = [];
+let leakWarningActive = false;
+
+function computeRamTrend(currentPct) {
+  ramSamples.push(currentPct);
+  if (ramSamples.length > ramTrendWindow) ramSamples.shift();
+  if (ramSamples.length < 10) return { arrow: '→', delta: 0, isLeaking: false };
+
+  const firstHalf = ramSamples.slice(0, Math.floor(ramSamples.length / 2));
+  const secondHalf = ramSamples.slice(Math.floor(ramSamples.length / 2));
+  const avgFirst = firstHalf.reduce((a, b) => a + b, 0) / firstHalf.length;
+  const avgSecond = secondHalf.reduce((a, b) => a + b, 0) / secondHalf.length;
+  const delta = avgSecond - avgFirst;
+
+  let arrow = '→'; // stable
+  if (delta > 1.5)  arrow = '↑↑'; // fast rising
+  else if (delta > 0.5) arrow = '↑';  // rising
+  else if (delta < -1.5) arrow = '↓↓'; // fast falling
+  else if (delta < -0.5) arrow = '↓';  // falling
+
+  // Leak: RAM rising by 5%+ across full window of 30 samples
+  const isLeaking = ramSamples.length >= ramTrendWindow &&
+    (ramSamples[ramSamples.length - 1] - ramSamples[0]) >= 5;
+
+  return { arrow, delta: Math.round(delta * 10) / 10, isLeaking };
+}
+
+// ── CPU Boost Tracker ────────────────────────────────────────
+let cpuBaseSpeed = 0; // will be set on first reading
+
 // ── Chart Setup ──────────────────────────────────────────────────
 const chartDefaults = {
   responsive: true,
@@ -222,6 +255,14 @@ document.getElementById('clearSpikes').addEventListener('click', () => {
 
 document.getElementById('peaksResetBtn').addEventListener('click', resetPeaks);
 
+document.getElementById('leakDismissBtn').addEventListener('click', () => {
+  const leakBanner = document.getElementById('leakBanner');
+  if (leakBanner) leakBanner.style.display = 'none';
+  leakWarningActive = false;
+  // Reset samples so it can re-trigger if leak continues
+  ramSamples.length = 0;
+});
+
 // ── Metrics Update ─────────────────────────────────────────────
 function updateMetrics(metrics) {
   state.lastMetrics = metrics;
@@ -270,14 +311,43 @@ function updateMetrics(metrics) {
     setText('cpuSpeed', `⚡ ${cpu.speed.toFixed(2)} GHz`);
   }
 
-  // RAM Card
+  // RAM Card — with trend indicator
   const usedGB = (ram.used / 1e9).toFixed(1);
   const totalGB = (ram.total / 1e9).toFixed(1);
   const freeGB = ((ram.total - ram.used) / 1e9).toFixed(1);
+  const trend = computeRamTrend(ram.usagePercent);
+  const trendColor = trend.arrow.includes('↑') ? '#f59e0b' : trend.arrow.includes('↓') ? '#22d3a4' : '#7880a0';
   updateCard('ramCard', 'ramValue', 'ramBar', 'ramMeta',
     ram.usagePercent, `${ram.usagePercent}%`,
     `${usedGB}GB / ${totalGB}GB`);
-  setText('ramFree', `▼ ${freeGB}GB free`);
+  const ramFreeEl = document.getElementById('ramFree');
+  if (ramFreeEl) {
+    ramFreeEl.innerHTML = `▼ ${freeGB}GB free &nbsp;<span style="color:${trendColor};font-weight:700">${trend.arrow}</span>`;
+  }
+
+  // Memory Leak Banner
+  const leakBanner = document.getElementById('leakBanner');
+  if (leakBanner) {
+    if (trend.isLeaking && !leakWarningActive) {
+      leakWarningActive = true;
+      leakBanner.style.display = 'flex';
+    } else if (!trend.isLeaking && leakWarningActive) {
+      leakWarningActive = false;
+      leakBanner.style.display = 'none';
+    }
+  }
+
+  // CPU Boost Badge
+  const cpuSpeedEl = document.getElementById('cpuSpeed');
+  if (cpu.speed && cpu.speed > 0) {
+    if (cpuBaseSpeed === 0) cpuBaseSpeed = cpu.speed; // capture first reading as base
+    const isBoosting = cpu.speed > cpuBaseSpeed * 1.05;
+    if (cpuSpeedEl) {
+      cpuSpeedEl.innerHTML = isBoosting
+        ? `⚡ ${cpu.speed.toFixed(2)} GHz <span class="boost-badge">⚡ BOOST</span>`
+        : `⚡ ${cpu.speed.toFixed(2)} GHz`;
+    }
+  }
 
   // Temp Card
   if (cpu.temp > 0) {

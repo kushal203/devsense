@@ -2,6 +2,14 @@
 
 All notable changes to DevSense will be documented here.
 
+## [1.0.35] - 2026-06-15
+
+### Added
+- 💧 **Memory Leak Detector**: Tracks RAM across a rolling 30-sample window. If RAM rises 5%+ continuously, a yellow "Memory Pressure Detected" banner appears — warning developers to check for memory leaks in their running processes (Node.js, Python servers, browser tabs, etc.). Dismiss button resets the detector.
+- ↑↓ **RAM Trend Arrow**: The RAM card now shows a live trend arrow — ↑↑ (fast rising), ↑ (rising), → (stable), ↓ (falling), ↓↓ (fast falling) — so you know at a glance if memory pressure is building up.
+- ⚡ **CPU Turbo Boost Badge**: When CPU frequency exceeds its session baseline by 5%+, an animated glowing "⚡ BOOST" badge appears on the CPU card — confirming your CPU is turbo-boosting for your current workload.
+
+
 ## [1.0.34] - 2026-06-14
 
 ### Improved

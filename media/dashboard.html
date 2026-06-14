@@ -39,6 +39,12 @@
       <span class="alert-text" id="alertText"></span>
     </div>
 
+    <!-- Memory Leak Warning Banner -->
+    <div class="leak-banner" id="leakBanner" style="display:none">
+      <span>💧 <strong>Memory Pressure Detected</strong> — RAM has been rising steadily. Check for memory leaks in running processes.</span>
+      <button class="btn-refresh" id="leakDismissBtn" style="border-color:rgba(245,158,11,0.4);color:var(--accent-yellow);background:rgba(245,158,11,0.1);flex-shrink:0;">Dismiss</button>
+    </div>
+
     <!-- Lite Mode Banner -->
     <div class="lite-banner" id="liteBanner" style="display:none; justify-content: space-between; align-items: center;">
       <span>🧊 <strong>Lite Mode Active</strong> — System under stress</span>
