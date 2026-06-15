@@ -65,6 +65,12 @@
       <button class="btn-refresh" id="throttleDismissBtn" style="border-color:rgba(239,68,68,0.4);color:var(--accent-red);background:rgba(239,68,68,0.1);flex-shrink:0;">Dismiss</button>
     </div>
 
+    <!-- Disk Space Warning Banner -->
+    <div class="disk-banner" id="diskBanner" style="display:none">
+      <span>💾 <strong>Low Disk Space</strong> — Less than 10% disk remaining. Free up space to avoid build failures.</span>
+      <button class="btn-refresh" id="diskBannerDismissBtn" style="border-color:rgba(239,68,68,0.4);color:var(--accent-red);background:rgba(239,68,68,0.1);flex-shrink:0;">Dismiss</button>
+    </div>
+
     <!-- Lite Mode Banner -->
     <div class="lite-banner" id="liteBanner" style="display:none; justify-content: space-between; align-items: center;">
       <span>🧊 <strong>Lite Mode Active</strong> — System under stress</span>
@@ -295,13 +301,31 @@
 
     <!-- PROCESSES TAB -->
     <div class="tab-content" id="content-processes">
-      <div class="section-header">
-        <span>Top CPU Processes <span id="procCount" style="font-size: 0.85rem; color: var(--text-secondary); font-weight: normal; margin-left: 6px;"></span></span>
-        <button class="btn-refresh" id="refreshProcs">↻ Refresh</button>
+      <div class="proc-toolbar">
+        <div class="proc-toolbar-top">
+          <span class="proc-toolbar-title">Process Manager</span>
+          <button class="btn-refresh" id="refreshProcs">↻ Refresh</button>
+        </div>
+        <div class="proc-toolbar-controls">
+          <div class="proc-search-wrap">
+            <span class="proc-search-icon">🔍</span>
+            <input type="text" class="proc-search" id="procSearch" placeholder="Filter by name..." />
+            <button class="proc-search-clear" id="procSearchClear" title="Clear">×</button>
+          </div>
+          <div class="proc-sort-group">
+            <span class="proc-sort-label">Sort:</span>
+            <button class="proc-sort-btn active" id="sortByCpu" title="Sort by CPU usage">CPU %</button>
+            <button class="proc-sort-btn" id="sortByMem" title="Sort by memory usage">RAM MB</button>
+          </div>
+        </div>
+        <div class="proc-col-headers">
+          <span style="flex:1">Process</span>
+          <span class="proc-col-cpu">CPU</span>
+          <span class="proc-col-ram">RAM</span>
+          <span class="proc-col-kill"></span>
+        </div>
       </div>
-      <div id="processList" class="process-list">
-        <div class="loading">Loading processes...</div>
-      </div>
+      <div id="processList" class="process-list"></div>
     </div>
 
     <!-- GIT SPIKES TAB -->

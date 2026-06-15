@@ -360,6 +360,46 @@ document.getElementById('throttleDismissBtn').addEventListener('click', () => {
   throttleWarningActive = false;
 });
 
+document.getElementById('diskBannerDismissBtn').addEventListener('click', () => {
+  const banner = document.getElementById('diskBanner');
+  if (banner) banner.style.display = 'none';
+  diskBannerDismissed = true;
+  diskWarningActive = false;
+});
+
+document.getElementById('procSearch').addEventListener('input', (e) => {
+  procFilter = e.target.value;
+  const clearBtn = document.getElementById('procSearchClear');
+  if (clearBtn) {
+    clearBtn.style.display = procFilter ? 'block' : 'none';
+  }
+  renderProcesses();
+});
+
+document.getElementById('procSearchClear').addEventListener('click', () => {
+  const searchInput = document.getElementById('procSearch');
+  if (searchInput) {
+    searchInput.value = '';
+  }
+  procFilter = '';
+  document.getElementById('procSearchClear').style.display = 'none';
+  renderProcesses();
+});
+
+document.getElementById('sortByCpu').addEventListener('click', () => {
+  procSortKey = 'cpu';
+  document.getElementById('sortByCpu').classList.add('active');
+  document.getElementById('sortByMem').classList.remove('active');
+  renderProcesses();
+});
+
+document.getElementById('sortByMem').addEventListener('click', () => {
+  procSortKey = 'mem';
+  document.getElementById('sortByMem').classList.add('active');
+  document.getElementById('sortByCpu').classList.remove('active');
+  renderProcesses();
+});
+
 document.getElementById('timerBtn').addEventListener('click', () => {
   if (timer.running) stopTimer();
   else startTimer();
@@ -581,6 +621,7 @@ function updateMetrics(metrics) {
 
   // Alerts
   checkAlerts(metrics);
+  checkDiskSpace(disk);
 }
 
 function updatePeaks(metrics) {
@@ -747,44 +788,79 @@ function checkAlerts(metrics) {
   }
 }
 
-// ── Process List ───────────────────────────────────────────────
-function updateProcesses(processes) {
+// ── Disk Space Alert ─────────────────────────────────────────────
+let diskWarningActive = false;
+let diskBannerDismissed = false;
+
+function checkDiskSpace(disk) {
+  if (diskBannerDismissed) return;
+  const banner = document.getElementById('diskBanner');
+  if (!banner) return;
+  const isLow = disk.usagePercent >= 90;
+  if (isLow && !diskWarningActive) {
+    diskWarningActive = true;
+    banner.style.display = 'flex';
+  } else if (!isLow && diskWarningActive) {
+    diskWarningActive = false;
+    banner.style.display = 'none';
+  }
+}
+
+// ── Process Manager ───────────────────────────────────────────────
+let allProcesses = [];   // raw data from last poll
+let procSortKey = 'cpu'; // 'cpu' | 'mem'
+let procFilter  = '';    // current search string
+
+function renderProcesses() {
   const list = document.getElementById('processList');
-  if (!processes || processes.length === 0) {
-    setText('procCount', '(0)');
-    list.innerHTML = `
-      <div class="empty-state" style="padding-top: 15px;">
-        <div class="empty-icon">🔍</div>
-        <div class="empty-text">No high-CPU processes</div>
-        <div class="empty-sub">Your system is running smoothly.</div>
-      </div>
-    `;
+  if (!list) return;
+
+  let procs = allProcesses.filter(p =>
+    !procFilter || p.name.toLowerCase().includes(procFilter.toLowerCase())
+  );
+
+  procs = [...procs].sort((a, b) =>
+    procSortKey === 'cpu' ? b.cpu - a.cpu : b.mem - a.mem
+  );
+
+  if (procs.length === 0) {
+    const msg = procFilter ? `No match for "${escHtml(procFilter)}"` : 'No processes. Your system is running smoothly.';
+    list.innerHTML = `<div class="empty-state" style="padding-top:15px"><div class="empty-icon">🔍</div><div class="empty-text">${msg}</div></div>`;
     return;
   }
 
-  setText('procCount', `(${processes.length})`);
+  const maxMem = Math.max(...procs.map(p => p.mem), 1);
 
-  list.innerHTML = processes.map(p => `
+  list.innerHTML = procs.map(p => {
+    const memBarPct = Math.round((p.mem / maxMem) * 100);
+    const cpuColor = p.cpu >= 80 ? 'var(--accent-red)' : p.cpu >= 50 ? 'var(--accent-yellow)' : 'var(--accent-blue)';
+    const memColor = p.mem >= maxMem * 0.8 ? 'var(--accent-yellow)' : 'var(--accent-green)';
+    const memDisplay = p.mem >= 1024 ? `${(p.mem / 1024).toFixed(1)}G` : `${p.mem}M`;
+    return `
     <div class="process-item">
-      <div>
+      <div class="proc-info">
         <div class="proc-name" title="${escHtml(p.command || p.name)}">${escHtml(p.name)}</div>
         <div class="proc-pid">PID ${p.pid}</div>
       </div>
-      <div class="proc-cpu">${p.cpu.toFixed(1)}%</div>
-      <div class="proc-mem">${p.mem}MB</div>
+      <div class="proc-cpu-col"><span class="proc-cpu" style="color:${cpuColor}">${p.cpu.toFixed(1)}%</span></div>
+      <div class="proc-mem-col">
+        <span class="proc-mem-val" style="color:${memColor}">${memDisplay}</span>
+        <div class="proc-mem-bar-track"><div class="proc-mem-bar-fill" style="width:${memBarPct}%;background:${memColor}"></div></div>
+      </div>
       <button class="proc-kill" data-pid="${p.pid}" data-name="${escHtml(p.name)}">Kill</button>
-    </div>
-  `).join('');
+    </div>`;
+  }).join('');
 
   list.querySelectorAll('.proc-kill').forEach(btn => {
     btn.addEventListener('click', () => {
-      vscode.postMessage({
-        type: 'killProcess',
-        pid: parseInt(btn.dataset.pid),
-        name: btn.dataset.name
-      });
+      vscode.postMessage({ type: 'killProcess', pid: parseInt(btn.dataset.pid), name: btn.dataset.name });
     });
   });
+}
+
+function updateProcesses(processes) {
+  allProcesses = processes || [];
+  renderProcesses();
 }
 
 // ── Git Spikes ─────────────────────────────────────────────────

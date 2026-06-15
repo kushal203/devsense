@@ -2,6 +2,14 @@
 
 All notable changes to DevSense will be documented here.
 
+## [1.0.38] - 2026-06-16
+
+### Added
+- 💾 **Low Disk Space Warning**: Added real-time disk space warning banner that alerts developers when their main drive space drops below 10% (usage ≥90%), allowing them to free up disk space before build tasks fail.
+- 🔍 **Process Manager Filter**: Filter processes by name directly from the dashboard view with an instant search text-field and clear button.
+- 📊 **Process Manager Sort**: Toggle sorting of processes between CPU usage % and Memory (RAM MB) allocation.
+- 🎨 **Memory Bar Indicators**: Visual RAM bars in the process list displaying relative usage of each process against the system's top consumer.
+
 ## [1.0.37] - 2026-06-15
 
 ### Fixed (Audit Pass)

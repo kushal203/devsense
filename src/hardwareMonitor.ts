@@ -30,6 +30,7 @@ export interface HardwareMetrics {
     readSpeed: number;      // MB/s
     writeSpeed: number;     // MB/s
     usagePercent: number;   // 0-100
+    free?: number;          // bytes
   };
   network: {
     downloadSpeed: number;  // KB/s
@@ -170,11 +171,13 @@ export class HardwareMonitor extends EventEmitter {
 
     // Disk usage
     let diskUsagePercent = 0;
+    let diskFree = 0;
     try {
       const fsData = await si.fsSize();
       const mainFs = fsData.find(f => f.mount === '/' || f.mount === 'C:') || fsData[0];
       if (mainFs) {
         diskUsagePercent = mainFs.use || 0;
+        diskFree = mainFs.available || (mainFs.size - mainFs.used) || 0;
       }
     } catch (_) {}
 
@@ -207,7 +210,8 @@ export class HardwareMonitor extends EventEmitter {
       disk: {
         readSpeed: readSpeed,
         writeSpeed: writeSpeed,
-        usagePercent: diskUsagePercent
+        usagePercent: diskUsagePercent,
+        free: diskFree
       },
       network: {
         downloadSpeed: downloadSpeed,
