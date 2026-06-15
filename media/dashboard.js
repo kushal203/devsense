@@ -60,6 +60,95 @@ function computeRamTrend(currentPct) {
 // ── CPU Boost Tracker ────────────────────────────────────────
 let cpuBaseSpeed = 0; // will be set on first reading
 
+// ── Build Timer ──────────────────────────────────────────────
+const timer = {
+  running: false,
+  startTime: 0,
+  intervalId: null,
+  sessionPeaks: { cpu: 0, ram: 0, temp: -1, gpu: -1 }
+};
+
+function formatDuration(ms) {
+  const totalSec = Math.floor(ms / 1000);
+  const h = Math.floor(totalSec / 3600);
+  const m = Math.floor((totalSec % 3600) / 60);
+  const s = totalSec % 60;
+  if (h > 0) return `${h}h ${String(m).padStart(2,'0')}m ${String(s).padStart(2,'0')}s`;
+  if (m > 0) return `${m}m ${String(s).padStart(2,'0')}s`;
+  return `${s}s`;
+}
+
+function startTimer() {
+  timer.running = true;
+  timer.startTime = Date.now();
+  timer.sessionPeaks = { cpu: 0, ram: 0, temp: -1, gpu: -1 };
+
+  const btn = document.getElementById('timerBtn');
+  const icon = document.getElementById('timerBtnIcon');
+  const display = document.getElementById('timerDisplay');
+  const resultCard = document.getElementById('timerResultCard');
+
+  if (btn) btn.classList.add('timer-active');
+  if (btn) btn.title = 'Stop Build Timer';
+  if (icon) icon.textContent = '⏹️';
+  if (display) display.style.display = 'inline-block';
+  if (resultCard) resultCard.style.display = 'none';
+
+  timer.intervalId = setInterval(() => {
+    const elapsed = Date.now() - timer.startTime;
+    if (display) display.textContent = formatDuration(elapsed);
+  }, 1000);
+}
+
+function stopTimer() {
+  if (!timer.running) return;
+  timer.running = false;
+  clearInterval(timer.intervalId);
+  timer.intervalId = null;
+
+  const elapsed = Date.now() - timer.startTime;
+  const btn = document.getElementById('timerBtn');
+  const icon = document.getElementById('timerBtnIcon');
+  const display = document.getElementById('timerDisplay');
+
+  if (btn) { btn.classList.remove('timer-active'); btn.title = 'Build Timer — click to start'; }
+  if (icon) icon.textContent = '⏱';
+  if (display) display.style.display = 'none';
+
+  // Show result card
+  showTimerResult(elapsed);
+}
+
+function showTimerResult(elapsedMs) {
+  const card = document.getElementById('timerResultCard');
+  const durationEl = document.getElementById('timerResultDuration');
+  const statsEl = document.getElementById('timerResultStats');
+  if (!card || !durationEl || !statsEl) return;
+
+  durationEl.textContent = formatDuration(elapsedMs);
+
+  const p = timer.sessionPeaks;
+  const stats = [
+    { icon: '🖥️', label: 'Peak CPU', val: p.cpu > 0 ? `${p.cpu}%` : 'N/A' },
+    { icon: '🧠', label: 'Peak RAM', val: p.ram > 0 ? `${p.ram}%` : 'N/A' },
+    { icon: '🌡️', label: 'Peak Temp', val: p.temp > 0 ? `${p.temp}°C` : 'N/A' },
+    { icon: '🎮', label: 'Peak GPU', val: p.gpu >= 0 ? `${p.gpu}%` : 'N/A' },
+  ];
+
+  statsEl.innerHTML = stats.map(s => `
+    <div class="timer-stat-item">
+      <span class="timer-stat-icon">${s.icon}</span>
+      <div class="timer-stat-info">
+        <div class="timer-stat-label">${s.label}</div>
+        <div class="timer-stat-val">${s.val}</div>
+      </div>
+    </div>
+  `).join('');
+
+  card.style.display = 'block';
+}
+
+
 // ── Chart Setup ──────────────────────────────────────────────────
 const chartDefaults = {
   responsive: true,
@@ -263,6 +352,16 @@ document.getElementById('leakDismissBtn').addEventListener('click', () => {
   ramSamples.length = 0;
 });
 
+document.getElementById('timerBtn').addEventListener('click', () => {
+  if (timer.running) stopTimer();
+  else startTimer();
+});
+
+document.getElementById('timerResultClose').addEventListener('click', () => {
+  const card = document.getElementById('timerResultCard');
+  if (card) card.style.display = 'none';
+});
+
 // ── Metrics Update ─────────────────────────────────────────────
 function updateMetrics(metrics) {
   state.lastMetrics = metrics;
@@ -309,6 +408,14 @@ function updateMetrics(metrics) {
     cpu.model || 'CPU');
   if (cpu.speed && cpu.speed > 0) {
     setText('cpuSpeed', `⚡ ${cpu.speed.toFixed(2)} GHz`);
+  }
+
+  // Track peaks for the active Build Timer session
+  if (timer.running) {
+    if (cpu.usage > timer.sessionPeaks.cpu) timer.sessionPeaks.cpu = cpu.usage;
+    if (ram.usagePercent > timer.sessionPeaks.ram) timer.sessionPeaks.ram = ram.usagePercent;
+    if (cpu.temp > 0 && cpu.temp > timer.sessionPeaks.temp) timer.sessionPeaks.temp = cpu.temp;
+    if (gpu.usage >= 0 && gpu.usage > timer.sessionPeaks.gpu) timer.sessionPeaks.gpu = gpu.usage;
   }
 
   // RAM Card — with trend indicator

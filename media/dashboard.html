@@ -21,6 +21,10 @@
         <div class="sys-uptime" id="sysUptime" style="font-size: 0.8rem; color: var(--text-secondary); margin-left: 12px;" title="System Uptime"></div>
       </div>
       <div class="header-right">
+        <button class="btn-icon" id="timerBtn" title="Build Timer — click to start">
+          <span id="timerBtnIcon">⏱</span>
+        </button>
+        <span class="timer-display" id="timerDisplay" style="display:none"></span>
         <button class="btn-icon" id="settingsBtn" title="Extension Settings">
           <span>⚙️</span>
         </button>
@@ -31,6 +35,16 @@
           <span>📋</span>
         </button>
       </div>
+    </div>
+
+    <!-- Build Timer Result Card -->
+    <div class="timer-result-card" id="timerResultCard" style="display:none">
+      <div class="timer-result-header">
+        <span>⏱ Build Report</span>
+        <button class="timer-result-close" id="timerResultClose">✕</button>
+      </div>
+      <div class="timer-result-duration" id="timerResultDuration">0s</div>
+      <div class="timer-result-stats" id="timerResultStats"></div>
     </div>
 
     <!-- Alert Banner -->

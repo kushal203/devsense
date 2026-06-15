@@ -2,6 +2,12 @@
 
 All notable changes to DevSense will be documented here.
 
+## [1.0.36] - 2026-06-15
+
+### Added
+- ⏱ **Build Timer**: A one-click stopwatch in the header that tracks exactly how long your build takes — and at the same time secretly records the peak CPU%, RAM%, Temperature, and GPU% during that window. When you stop the timer, a beautiful "Build Report" card drops in showing duration (e.g. `2m 14s`) alongside all four hardware peaks. Perfect for benchmarking webpack, cargo, gradle, pytest, or any other dev workflow. The timer button glows red while running, green display ticks up second-by-second.
+
+
 ## [1.0.35] - 2026-06-15
 
 ### Added
