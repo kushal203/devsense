@@ -607,6 +607,41 @@ canvas { display: block; width: 100% !important; }
   50%       { opacity: 0.75; box-shadow: 0 0 12px rgba(245,158,11,0.9); }
 }
 
+/* ── Thermal Throttle Badge ── */
+.throttle-badge {
+  display: inline-block;
+  background: linear-gradient(135deg, #ef4444, #b91c1c);
+  color: #fff;
+  font-size: 8px;
+  font-weight: 800;
+  padding: 1px 5px;
+  border-radius: 4px;
+  letter-spacing: 0.5px;
+  animation: throttlePulse 0.8s ease-in-out infinite;
+  vertical-align: middle;
+  margin-left: 3px;
+}
+@keyframes throttlePulse {
+  0%, 100% { opacity: 1; box-shadow: 0 0 8px rgba(239,68,68,0.8); }
+  50%       { opacity: 0.6; box-shadow: 0 0 16px rgba(239,68,68,1); }
+}
+
+/* ── Thermal Throttle Banner ── */
+.throttle-banner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 8px 14px;
+  background: rgba(239, 68, 68, 0.1);
+  border-bottom: 1px solid rgba(239, 68, 68, 0.35);
+  font-size: 11px;
+  color: #fca5a5;
+  animation: slideDown 0.3s ease;
+}
+.throttle-banner strong { color: #ef4444; }
+
+
 /* ── Build Timer ── */
 .timer-display {
   font-size: 11px;

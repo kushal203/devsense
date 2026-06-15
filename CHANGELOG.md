@@ -2,6 +2,18 @@
 
 All notable changes to DevSense will be documented here.
 
+## [1.0.37] - 2026-06-15
+
+### Fixed (Audit Pass)
+- 🐛 **Redundant CPU speed setText**: Removed a duplicate `textContent` call that ran immediately before the boost badge `innerHTML` override, causing a single-frame flicker on every metrics tick.
+- 🐛 **CPU Boost baseline was unreliable**: Previously set from the very first reading (could be a cold-boot spike). Now tracks the **minimum observed speed** across the session as the true idle baseline — boost detection is now accurate.
+- 🐛 **Temperature bar scale was wrong**: The bar filled to 100% only at 100°C (already dangerous). Corrected to scale 0–90°C → 0–100% so the bar turns full-red well before hitting dangerous territory.
+- 🐛 **Alert banner DOM thrash**: `checkAlerts` re-set `display:flex/none` every 2 seconds even when state hadn't changed. Added hysteresis — banner DOM only updates on state *transitions* (clear→alert or alert→clear), eliminating unnecessary reflows.
+
+### Added
+- 🔥 **Thermal Throttle Detector**: When CPU temperature reaches ≥85°C AND clock speed drops 15%+ from the session maximum, a red "🔥 CPU Thermal Throttling Detected" banner fires and a pulsing `🔥 THROTTLE` badge appears on the CPU speed row. Laptop developers will catch thermal throttle events instantly — before they wonder why their build got 40% slower.
+
+
 ## [1.0.36] - 2026-06-15
 
 ### Added

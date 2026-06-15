@@ -2,7 +2,7 @@
   "name": "devsense",
   "displayName": "DevSense — VS Code System Monitor & Performance Dashboard",
   "description": "Real-time CPU, RAM, GPU & temperature monitor for VS Code. Live performance dashboard, system health score, session peak tracker, process manager, anomaly alerts & Git spike correlation. Works on Windows, macOS & Linux.",
-  "version": "1.0.36",
+  "version": "1.0.37",
   "publisher": "devsense-team",
   "icon": "images/icon.png",
   "engines": {

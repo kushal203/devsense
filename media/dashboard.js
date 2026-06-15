@@ -57,8 +57,10 @@ function computeRamTrend(currentPct) {
   return { arrow, delta: Math.round(delta * 10) / 10, isLeaking };
 }
 
-// ── CPU Boost Tracker ────────────────────────────────────────
-let cpuBaseSpeed = 0; // will be set on first reading
+// ── CPU Boost / Throttle Tracker ────────────────────────────────────
+let cpuMinSpeed = Infinity; // track lowest observed speed as true idle baseline
+let cpuMaxSpeed = 0;        // track highest speed this session
+let throttleWarningActive = false;
 
 // ── Build Timer ──────────────────────────────────────────────
 const timer = {
@@ -352,6 +354,12 @@ document.getElementById('leakDismissBtn').addEventListener('click', () => {
   ramSamples.length = 0;
 });
 
+document.getElementById('throttleDismissBtn').addEventListener('click', () => {
+  const b = document.getElementById('throttleBanner');
+  if (b) b.style.display = 'none';
+  throttleWarningActive = false;
+});
+
 document.getElementById('timerBtn').addEventListener('click', () => {
   if (timer.running) stopTimer();
   else startTimer();
@@ -406,9 +414,7 @@ function updateMetrics(metrics) {
   updateCard('cpuCard', 'cpuValue', 'cpuBar', 'cpuMeta',
     cpu.usage, `${cpu.usage}%`,
     cpu.model || 'CPU');
-  if (cpu.speed && cpu.speed > 0) {
-    setText('cpuSpeed', `⚡ ${cpu.speed.toFixed(2)} GHz`);
-  }
+  // Note: cpuSpeed innerHTML is set by the Boost/Throttle block below; no setText here
 
   // Track peaks for the active Build Timer session
   if (timer.running) {
@@ -444,21 +450,41 @@ function updateMetrics(metrics) {
     }
   }
 
-  // CPU Boost Badge
+  // CPU Boost / Throttle Badge (Fix: use minimum observed speed as idle baseline)
   const cpuSpeedEl = document.getElementById('cpuSpeed');
   if (cpu.speed && cpu.speed > 0) {
-    if (cpuBaseSpeed === 0) cpuBaseSpeed = cpu.speed; // capture first reading as base
-    const isBoosting = cpu.speed > cpuBaseSpeed * 1.05;
+    if (cpu.speed < cpuMinSpeed) cpuMinSpeed = cpu.speed; // track lowest = idle baseline
+    if (cpu.speed > cpuMaxSpeed) cpuMaxSpeed = cpu.speed; // track highest
+    const idleBase = cpuMinSpeed < Infinity ? cpuMinSpeed : cpu.speed;
+    const isBoosting = cpu.speed > idleBase * 1.08;
+    const isThrottling = cpu.temp >= 85 && cpuMaxSpeed > 0 && cpu.speed < cpuMaxSpeed * 0.85;
+
     if (cpuSpeedEl) {
-      cpuSpeedEl.innerHTML = isBoosting
-        ? `⚡ ${cpu.speed.toFixed(2)} GHz <span class="boost-badge">⚡ BOOST</span>`
-        : `⚡ ${cpu.speed.toFixed(2)} GHz`;
+      if (isThrottling) {
+        cpuSpeedEl.innerHTML = `⚡ ${cpu.speed.toFixed(2)} GHz <span class="throttle-badge">🔥 THROTTLE</span>`;
+      } else if (isBoosting) {
+        cpuSpeedEl.innerHTML = `⚡ ${cpu.speed.toFixed(2)} GHz <span class="boost-badge">⚡ BOOST</span>`;
+      } else {
+        cpuSpeedEl.textContent = `⚡ ${cpu.speed.toFixed(2)} GHz`;
+      }
+    }
+
+    // Thermal Throttle Banner
+    const throttleBanner = document.getElementById('throttleBanner');
+    if (throttleBanner) {
+      if (isThrottling && !throttleWarningActive) {
+        throttleWarningActive = true;
+        throttleBanner.style.display = 'flex';
+      } else if (!isThrottling && throttleWarningActive) {
+        throttleWarningActive = false;
+        throttleBanner.style.display = 'none';
+      }
     }
   }
 
-  // Temp Card
+  // Temp Card — bar maxes at 90°C (danger zone)
   if (cpu.temp > 0) {
-    const tempPct = Math.min(100, (cpu.temp / 100) * 100);
+    const tempPct = Math.min(100, (cpu.temp / 90) * 100);
     updateCard('tempCard', 'tempValue', 'tempBar', 'tempMeta',
       tempPct, `${cpu.temp}°C`,
       'CPU Temperature');
@@ -696,19 +722,28 @@ function updateCores(cores) {
   });
 }
 
+// ── Alert Hysteresis ─────────────────────────────────────────────
+let alertActive = false;
+
 function checkAlerts(metrics) {
   const alerts = [];
-  if (metrics.cpu.usage >= 80) { alerts.push(`CPU ${metrics.cpu.usage}%`); }
-  if (metrics.ram.usagePercent >= 85) { alerts.push(`RAM ${metrics.ram.usagePercent}%`); }
-  if (metrics.cpu.temp > 0 && metrics.cpu.temp >= 80) { alerts.push(`Temp ${metrics.cpu.temp}°C`); }
+  if (metrics.cpu.usage >= 80)                             alerts.push(`CPU ${metrics.cpu.usage}%`);
+  if (metrics.ram.usagePercent >= 85)                       alerts.push(`RAM ${metrics.ram.usagePercent}%`);
+  if (metrics.cpu.temp > 0 && metrics.cpu.temp >= 80)      alerts.push(`Temp ${metrics.cpu.temp}°C`);
 
   const banner = document.getElementById('alertBanner');
   const alertText = document.getElementById('alertText');
   if (alerts.length > 0) {
-    banner.style.display = 'flex';
-    alertText.textContent = `⚠️ High load: ${alerts.join(' | ')}`;
+    if (!alertActive) {            // Only update DOM on state change (was clear, now alerting)
+      alertActive = true;
+      if (banner) banner.style.display = 'flex';
+    }
+    if (alertText) alertText.textContent = `⚠️ High load: ${alerts.join(' | ')}`;
   } else {
-    banner.style.display = 'none';
+    if (alertActive) {             // Only hide on state change (was alerting, now clear)
+      alertActive = false;
+      if (banner) banner.style.display = 'none';
+    }
   }
 }
 
