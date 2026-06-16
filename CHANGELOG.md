@@ -2,6 +2,12 @@
 
 All notable changes to DevSense will be documented here.
 
+## [1.0.39] - 2026-06-16
+
+### Added
+- 🌐 **Open Ports Manager**: A highly requested new tab that displays all actively listening network ports (TCP/UDP) on your machine.
+- 🚦 **Port Conflict Resolution**: Identify exactly which process and PID is occupying a port (e.g., node, python), and use the one-click "Kill" button to instantly resolve `EADDRINUSE` errors without leaving your editor.
+
 ## [1.0.38] - 2026-06-16
 
 ### Added

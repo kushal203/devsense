@@ -305,6 +305,8 @@ document.querySelectorAll('.tab').forEach(tab => {
 
     if (tabId === 'processes') {
       vscode.postMessage({ type: 'getProcesses' });
+    } else if (tabId === 'ports') {
+      vscode.postMessage({ type: 'getOpenPorts' });
     } else if (tabId === 'history') {
       vscode.postMessage({ type: 'getGitSpikes' });
     }
@@ -334,6 +336,10 @@ document.getElementById('processBtn').addEventListener('click', () => {
 
 document.getElementById('refreshProcs').addEventListener('click', () => {
   vscode.postMessage({ type: 'getProcesses' });
+});
+
+document.getElementById('refreshPorts').addEventListener('click', () => {
+  vscode.postMessage({ type: 'getOpenPorts' });
 });
 
 document.getElementById('refreshSpikes').addEventListener('click', () => {
@@ -911,6 +917,35 @@ function updateGitSpikes(spikes) {
   });
 }
 
+// ── Ports Manager ──────────────────────────────────────────────
+function updatePorts(ports) {
+  const list = document.getElementById('portList');
+  if (!ports || ports.length === 0) {
+    list.innerHTML = `<div class="empty-state" style="padding-top:15px"><div class="empty-icon">🌐</div><div class="empty-text">No open ports detected.</div></div>`;
+    return;
+  }
+
+  list.innerHTML = ports.map(p => {
+    const protoClass = p.protocol.toLowerCase();
+    return `
+    <div class="port-item">
+      <div class="port-num">${p.port}</div>
+      <div class="port-proto ${protoClass}">${p.protocol}</div>
+      <div class="proc-info">
+        <div class="proc-name" title="${escHtml(p.processName)}">${escHtml(p.processName)}</div>
+        <div class="proc-pid">PID ${p.pid}</div>
+      </div>
+      <button class="proc-kill" data-pid="${p.pid}" data-name="${escHtml(p.processName)}">Kill</button>
+    </div>`;
+  }).join('');
+
+  list.querySelectorAll('.proc-kill').forEach(btn => {
+    btn.addEventListener('click', () => {
+      vscode.postMessage({ type: 'killProcess', pid: parseInt(btn.dataset.pid), name: btn.dataset.name });
+    });
+  });
+}
+
 // ── Lite Mode Status ───────────────────────────────────────────
 function updateLiteMode(active) {
   const banner = document.getElementById('liteBanner');
@@ -929,6 +964,9 @@ window.addEventListener('message', event => {
       break;
     case 'processes':
       updateProcesses(msg.data);
+      break;
+    case 'openPorts':
+      updatePorts(msg.data);
       break;
     case 'gitSpikes':
       updateGitSpikes(msg.data);

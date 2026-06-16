@@ -101,6 +101,9 @@ export function activate(context: vscode.ExtensionContext) {
     } else if (msg.type === 'getProcesses') {
       const processes = await processManager.getTopProcesses(25);
       DashboardPanel.postMessage({ type: 'processes', data: processes });
+    } else if (msg.type === 'getOpenPorts') {
+      const openPorts = await processManager.getOpenPorts();
+      DashboardPanel.postMessage({ type: 'openPorts', data: openPorts });
     } else if (msg.type === 'getGitSpikes') {
       const spikes = gitCorrelator.getRecentSpikes();
       DashboardPanel.postMessage({ type: 'gitSpikes', data: spikes });

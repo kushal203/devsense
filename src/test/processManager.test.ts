@@ -61,6 +61,23 @@ describe('ProcessManager', () => {
     });
   });
 
+  describe('getOpenPorts()', () => {
+    it('returns an array of listening ports', async () => {
+      const ports = await manager.getOpenPorts();
+      assert.ok(Array.isArray(ports));
+    });
+
+    it('each port has required fields', async () => {
+      const ports = await manager.getOpenPorts();
+      for (const p of ports) {
+        assert.ok(typeof p.port === 'number', `Invalid port: ${p.port}`);
+        assert.ok(typeof p.protocol === 'string', `Invalid protocol: ${p.protocol}`);
+        assert.ok(typeof p.pid === 'number', `Invalid pid: ${p.pid}`);
+        assert.ok(typeof p.processName === 'string', `Invalid processName: ${p.processName}`);
+      }
+    });
+  });
+
   describe('killProcess()', () => {
     it('returns false for non-existent PID (9999999)', async () => {
       const result = await manager.killProcess(9999999);

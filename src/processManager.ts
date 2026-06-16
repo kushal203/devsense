@@ -10,7 +10,44 @@ export interface ProcessInfo {
   started: string;
 }
 
+export interface PortInfo {
+  port: number;
+  protocol: string;
+  pid: number;
+  processName: string;
+}
+
 export class ProcessManager {
+  async getOpenPorts(): Promise<PortInfo[]> {
+    try {
+      const [connections, procs] = await Promise.all([
+        si.networkConnections(),
+        si.processes()
+      ]);
+
+      const listenPorts = connections.filter(c => c.state === 'LISTEN' && c.localPort);
+      const uniquePorts = new Map<number, PortInfo>();
+
+      for (const conn of listenPorts) {
+        const portNum = parseInt(conn.localPort, 10);
+        if (isNaN(portNum) || uniquePorts.has(portNum)) continue;
+
+        const proc = procs.list.find(p => p.pid === conn.pid);
+        uniquePorts.set(portNum, {
+          port: portNum,
+          protocol: conn.protocol.toUpperCase(),
+          pid: conn.pid,
+          processName: proc ? proc.name : (conn.pid > 0 ? 'System Process' : 'Unknown')
+        });
+      }
+
+      return Array.from(uniquePorts.values()).sort((a, b) => a.port - b.port);
+    } catch (err) {
+      console.error('[DevSense] Failed to get open ports:', err);
+      return [];
+    }
+  }
+
   async getTopProcesses(limit: number = 20): Promise<ProcessInfo[]> {
     try {
       const procs = await si.processes();
